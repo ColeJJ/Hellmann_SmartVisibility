@@ -24,6 +24,7 @@ import com.vaadin.flow.theme.Theme;
 import de.hsos.geois.ws2021.views.user.UserView;
 import de.hsos.geois.ws2021.views.MainView;
 import de.hsos.geois.ws2021.views.about.AboutView;
+import de.hsos.geois.ws2021.views.device.DeviceView;
 
 /**
  * The main view is a top-level placeholder for other views.
@@ -81,10 +82,12 @@ public class MainView extends AppLayout {
         tabs.add(createMenuItems());
         return tabs;
     }
-
+    
+    //Shows menue points in frontend
     private Component[] createMenuItems() {
         return new Tab[] {
             createTab("Users", UserView.class),
+            createTab("Devices", DeviceView.class),
             createTab("About", AboutView.class)
         };
     }

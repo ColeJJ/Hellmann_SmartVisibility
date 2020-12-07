@@ -1,4 +1,4 @@
-package de.hsos.geois.ws2021.views.user;
+package de.hsos.geois.ws2021.views.device;
 
 import com.vaadin.flow.component.AbstractField;
 import com.vaadin.flow.component.button.Button;
@@ -24,11 +24,11 @@ import de.hsos.geois.ws2021.data.service.PersonDataService;
 import de.hsos.geois.ws2021.views.MainView;
 import de.hsos.geois.ws2021.views.PersonDataProvider;
 
-@Route(value = "user", layout = MainView.class)
+@Route(value = "device", layout = MainView.class)
 @PageTitle("MyDeviceManager")
 @CssImport("./styles/views/mydevicemanager/my-device-manager-view.css")
 @RouteAlias(value = "", layout = MainView.class)
-public class UserView extends Div {
+public class DeviceView extends Div {
 
 	private static final long serialVersionUID = 4939100739729795870L;
 
@@ -51,7 +51,7 @@ public class UserView extends Div {
     private PersonDataService personService; //fill grid with persons of db
     
     //Constructor
-    public UserView() {
+    public DeviceView() {
         setId("my-device-manager-view");
         this.personService = PersonDataService.getInstance();
         // Configure Grid
