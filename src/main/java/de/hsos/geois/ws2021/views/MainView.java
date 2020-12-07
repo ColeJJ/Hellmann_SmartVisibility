@@ -1,4 +1,4 @@
-package de.hsos.geois.ws2021.views.main;
+package de.hsos.geois.ws2021.views;
 
 import java.util.Optional;
 
@@ -20,8 +20,9 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.RouterLink;
 import com.vaadin.flow.server.PWA;
 import com.vaadin.flow.theme.Theme;
-import de.hsos.geois.ws2021.views.main.MainView;
-import de.hsos.geois.ws2021.views.mydevicemanager.MyDeviceManagerView;
+
+import de.hsos.geois.ws2021.views.user.UserView;
+import de.hsos.geois.ws2021.views.MainView;
 import de.hsos.geois.ws2021.views.about.AboutView;
 
 /**
@@ -83,7 +84,7 @@ public class MainView extends AppLayout {
 
     private Component[] createMenuItems() {
         return new Tab[] {
-            createTab("MyDeviceManager", MyDeviceManagerView.class),
+            createTab("Users", UserView.class),
             createTab("About", AboutView.class)
         };
     }

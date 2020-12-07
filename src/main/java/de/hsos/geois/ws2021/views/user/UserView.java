@@ -1,9 +1,5 @@
-package de.hsos.geois.ws2021.views.mydevicemanager;
+package de.hsos.geois.ws2021.views.user;
 
-import java.util.Optional;
-
-import de.hsos.geois.ws2021.data.entity.Person;
-import de.hsos.geois.ws2021.data.service.PersonService;
 import com.vaadin.flow.component.AbstractField;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -21,19 +17,22 @@ import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.vaadin.artur.helpers.CrudServiceDataProvider;
-import de.hsos.geois.ws2021.views.main.MainView;
 import com.vaadin.flow.router.RouteAlias;
+
+import de.hsos.geois.ws2021.data.entity.Person;
+import de.hsos.geois.ws2021.data.service.PersonDataService;
+import de.hsos.geois.ws2021.views.MainView;
+import de.hsos.geois.ws2021.views.PersonDataProvider;
 
 @Route(value = "user", layout = MainView.class)
 @PageTitle("MyDeviceManager")
 @CssImport("./styles/views/mydevicemanager/my-device-manager-view.css")
 @RouteAlias(value = "", layout = MainView.class)
-public class MyDeviceManagerView extends Div {
+public class UserView extends Div {
 
-    private Grid<Person> grid;
+	private static final long serialVersionUID = 4939100739729795870L;
+
+	private Grid<Person> grid;
 
     private TextField firstName = new TextField();
     private TextField lastName = new TextField();
@@ -49,25 +48,25 @@ public class MyDeviceManagerView extends Div {
 
     private Person person = new Person();
 
-    private PersonService personService;
+    private PersonDataService personService;
 
-    public MyDeviceManagerView(@Autowired PersonService personService) {
+    public UserView() {
         setId("my-device-manager-view");
-        this.personService = personService;
+        this.personService = PersonDataService.getInstance();
         // Configure Grid
         grid = new Grid<>(Person.class);
         grid.setColumns("firstName", "lastName", "email", "phone", "dateOfBirth", "occupation");
-        grid.setDataProvider(new CrudServiceDataProvider<Person, Void>(personService));
+        grid.setDataProvider(new PersonDataProvider());
         grid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
         grid.setHeightFull();
 
         // when a row is selected or deselected, populate form
         grid.asSingleSelect().addValueChangeListener(event -> {
             if (event.getValue() != null) {
-                Optional<Person> personFromBackend = personService.get(event.getValue().getId());
+                Person personFromBackend = personService.getById(event.getValue().getId());
                 // when a row is selected but the data is no longer available, refresh grid
-                if (personFromBackend.isPresent()) {
-                    populateForm(personFromBackend.get());
+                if (personFromBackend != null) {
+                    populateForm(personFromBackend	);
                 } else {
                     refreshGrid();
                 }
