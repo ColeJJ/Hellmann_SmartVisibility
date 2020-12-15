@@ -1,9 +1,8 @@
-package de.hsos.geois.ws2021.views.user;
+package de.hsos.geois.ws2021.views.device;
 
 import com.vaadin.flow.component.AbstractField;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
-import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.Grid;
@@ -12,6 +11,7 @@ import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.splitlayout.SplitLayout;
+import com.vaadin.flow.component.textfield.BigDecimalField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.ValidationException;
@@ -19,53 +19,54 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouteAlias;
 
-import de.hsos.geois.ws2021.data.entity.User;
-import de.hsos.geois.ws2021.data.service.UserDataService;
+import de.hsos.geois.ws2021.data.entity.Device;
+import de.hsos.geois.ws2021.data.service.DeviceDataService;
 import de.hsos.geois.ws2021.views.MainView;
 
-@Route(value = "user", layout = MainView.class)
+@Route(value = "device", layout = MainView.class)
 @PageTitle("MyDeviceManager")
 @CssImport("./styles/views/mydevicemanager/my-device-manager-view.css")
-@RouteAlias(value = "", layout = MainView.class)
-public class UserView extends Div {
+@RouteAlias(value = "device", layout = MainView.class)
+public class DeviceView extends Div {
 
 	private static final long serialVersionUID = 4939100739729795870L;
 
-	private Grid<User> grid;
+	private Grid<Device> grid;
 
-    private TextField firstName = new TextField();
-    private TextField lastName = new TextField();
-    private TextField email = new TextField();
-    private TextField phone = new TextField();
-    private DatePicker dateOfBirth = new DatePicker();
-    private TextField occupation = new TextField();
+    private TextField name = new TextField();
+    private TextField artNr = new TextField();
+    private TextField serialNr = new TextField();
+    private BigDecimalField purchasePrice = new BigDecimalField();
+    private BigDecimalField salesPrice = new BigDecimalField();
 
+
+    // TODO: Refactore these buttons in a separate (abstract) form class
     private Button cancel = new Button("Cancel");
     private Button save = new Button("Save");
 
-    private Binder<User> binder;
+    private Binder<Device> binder;
 
-    private User person = new User();
+    private Device currentDevice = new Device();
 
-    private UserDataService personService;
+    private DeviceDataService deviceService;
 
-    public UserView() {
+    public DeviceView() {
         setId("my-device-manager-view");
-        this.personService = UserDataService.getInstance();
+        this.deviceService = DeviceDataService.getInstance();
         // Configure Grid
-        grid = new Grid<>(User.class);
-        grid.setColumns("firstName", "lastName", "email", "phone", "dateOfBirth", "occupation");
-        grid.setDataProvider(new UserDataProvider());
+        grid = new Grid<>(Device.class);
+        grid.setColumns("name", "artNr", "serialNr", "purchasePrice", "salesPrice");
+        grid.setDataProvider(new DeviceDataProvider());
         grid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
         grid.setHeightFull();
 
         // when a row is selected or deselected, populate form
         grid.asSingleSelect().addValueChangeListener(event -> {
             if (event.getValue() != null) {
-                User personFromBackend = personService.getById(event.getValue().getId());
+                Device deviceFromBackend = deviceService.getById(event.getValue().getId());
                 // when a row is selected but the data is no longer available, refresh grid
-                if (personFromBackend != null) {
-                    populateForm(personFromBackend);
+                if (deviceFromBackend != null) {
+                    populateForm(deviceFromBackend	);
                 } else {
                     refreshGrid();
                 }
@@ -75,7 +76,7 @@ public class UserView extends Div {
         });
 
         // Configure Form
-        binder = new Binder<>(User.class);
+        binder = new Binder<>(Device.class);
 
         // Bind fields. This where you'd define e.g. validation rules
         binder.bindInstanceFields(this);
@@ -87,16 +88,16 @@ public class UserView extends Div {
 
         save.addClickListener(e -> {
             try {
-                if (this.person == null) {
-                    this.person = new User();
+                if (this.currentDevice == null) {
+                    this.currentDevice = new Device();
                 }
-                binder.writeBean(this.person);
-                personService.update(this.person);
+                binder.writeBean(this.currentDevice);
+                deviceService.update(this.currentDevice);
                 clearForm();
                 refreshGrid();
-                Notification.show("User details stored.");
+                Notification.show("Device details stored.");
             } catch (ValidationException validationException) {
-                Notification.show("An exception happened while trying to store the user details.");
+                Notification.show("An exception happened while trying to store the device details.");
             }
         });
 
@@ -118,12 +119,11 @@ public class UserView extends Div {
         editorLayoutDiv.add(editorDiv);
 
         FormLayout formLayout = new FormLayout();
-        addFormItem(editorDiv, formLayout, firstName, "First name");
-        addFormItem(editorDiv, formLayout, lastName, "Last name");
-        addFormItem(editorDiv, formLayout, email, "Email");
-        addFormItem(editorDiv, formLayout, phone, "Phone");
-        addFormItem(editorDiv, formLayout, dateOfBirth, "Date of birth");
-        addFormItem(editorDiv, formLayout, occupation, "Occupation");
+        addFormItem(editorDiv, formLayout, name, "Device name");
+        addFormItem(editorDiv, formLayout, artNr, "Article number");
+        addFormItem(editorDiv, formLayout, serialNr, "Serial number");
+        addFormItem(editorDiv, formLayout, purchasePrice, "Purchase price");
+        addFormItem(editorDiv, formLayout, salesPrice, "Sales price");
         createButtonLayout(editorLayoutDiv);
 
         splitLayout.addToSecondary(editorLayoutDiv);
@@ -163,8 +163,8 @@ public class UserView extends Div {
         populateForm(null);
     }
 
-    private void populateForm(User value) {
-        this.person = value;
-        binder.readBean(this.person);
+    private void populateForm(Device value) {
+        this.currentDevice = value;
+        binder.readBean(this.currentDevice);
     }
 }

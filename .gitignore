@@ -3,8 +3,6 @@
 .settings
 .project
 .classpath
-/src/main/resources/META-INF/persistence.xml
-
 
 *.iml
 .DS_Store
