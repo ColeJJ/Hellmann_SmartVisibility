@@ -82,7 +82,8 @@ public class MainView extends AppLayout {
         tabs.add(createMenuItems());
         return tabs;
     }
-
+    
+    //Shows menue points in frontend
     private Component[] createMenuItems() {
         return new Tab[] {
             createTab("Users", UserView.class),

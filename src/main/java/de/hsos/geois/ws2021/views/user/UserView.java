@@ -44,47 +44,48 @@ public class UserView extends Div {
     private Button save = new Button("Save");
 
     private Binder<User> binder;
-
     private User person = new User();
 
     private UserDataService personService;
-
-    public UserView() {
-        setId("my-device-manager-view");
-        this.personService = UserDataService.getInstance();
-        // Configure Grid
-        grid = new Grid<>(User.class);
-        grid.setColumns("firstName", "lastName", "email", "phone", "dateOfBirth", "occupation");
-        grid.setDataProvider(new UserDataProvider());
-        grid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
-        grid.setHeightFull();
-
-        // when a row is selected or deselected, populate form
-        grid.asSingleSelect().addValueChangeListener(event -> {
-            if (event.getValue() != null) {
-                User personFromBackend = personService.getById(event.getValue().getId());
-                // when a row is selected but the data is no longer available, refresh grid
-                if (personFromBackend != null) {
-                    populateForm(personFromBackend);
-                } else {
-                    refreshGrid();
-                }
-            } else {
-                clearForm();
-            }
-        });
+    
+	public UserView() {
+	    setId("my-device-manager-view");
+	    this.personService = UserDataService.getInstance();
+	    // Configure Grid
+	    grid = new Grid<>(User.class);
+	    grid.setColumns("firstName", "lastName", "email", "phone", "dateOfBirth", "occupation");
+	    grid.setDataProvider(new UserDataProvider());
+	    grid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
+	    grid.setHeightFull();
+	
+	    // when a row is selected or deselected, populate form
+	    grid.asSingleSelect().addValueChangeListener(event -> {
+	        if (event.getValue() != null) {
+	            User personFromBackend = personService.getById(event.getValue().getId());
+	            // when a row is selected but the data is no longer available, refresh grid
+	            if (personFromBackend != null) {
+	                populateForm(personFromBackend);
+	            } else {
+	                refreshGrid();
+	            }
+	        } else {
+	            clearForm();
+	        }
+	    });
 
         // Configure Form
         binder = new Binder<>(User.class);
 
         // Bind fields. This where you'd define e.g. validation rules
         binder.bindInstanceFields(this);
-
+        
+        //cancel-button
         cancel.addClickListener(e -> {
             clearForm();
             refreshGrid();
         });
-
+        
+        //save-button
         save.addClickListener(e -> {
             try {
                 if (this.person == null) {
@@ -99,7 +100,8 @@ public class UserView extends Div {
                 Notification.show("An exception happened while trying to store the user details.");
             }
         });
-
+        
+        //layout
         SplitLayout splitLayout = new SplitLayout();
         splitLayout.setSizeFull();
 
@@ -128,7 +130,8 @@ public class UserView extends Div {
 
         splitLayout.addToSecondary(editorLayoutDiv);
     }
-
+    
+    //Add Buttons
     private void createButtonLayout(Div editorLayoutDiv) {
         HorizontalLayout buttonLayout = new HorizontalLayout();
         buttonLayout.setId("button-layout");
