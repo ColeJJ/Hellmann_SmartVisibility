@@ -20,8 +20,7 @@ public class User extends AbstractEntity {
 	private LocalDate dateOfBirth;
 	private String occupation;
 	
-	@OneToMany(cascade = CascadeType.ALL)
-	@JoinColumn(name = "USER_ID")
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
 	private Collection<Device> devices;
 	
 	public User() {
@@ -88,6 +87,10 @@ public class User extends AbstractEntity {
 		return getDevices().remove(device);
 	}
 	
+	public String toString()
+	{
+		return getLastName() + ", " + getFirstName();
+	}
 	
 
 }

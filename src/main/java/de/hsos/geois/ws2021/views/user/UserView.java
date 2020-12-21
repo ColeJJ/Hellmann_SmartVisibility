@@ -3,6 +3,7 @@ package de.hsos.geois.ws2021.views.user;
 import com.vaadin.flow.component.AbstractField;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.formlayout.FormLayout;
@@ -19,6 +20,7 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouteAlias;
 
+import de.hsos.geois.ws2021.data.entity.Device;
 import de.hsos.geois.ws2021.data.entity.User;
 import de.hsos.geois.ws2021.data.service.UserDataService;
 import de.hsos.geois.ws2021.views.MainView;
