@@ -78,7 +78,7 @@ public class UserDataService extends DataService<User> {
 		
 		String queryString = "SELECT u FROM User u WHERE (CONCAT(u.id, '') LIKE :filter "
 				+ "OR LOWER(u.firstName) LIKE :filter "
-				+ "OR LOWER(us.lastName) LIKE :filter)" + sortString;
+				+ "OR LOWER(u.lastName) LIKE :filter)" + sortString;
 		
 		return EntityManagerHandler.runInTransaction(em -> em.createQuery(queryString, User.class)
 				 .setParameter("filter", preparedFilter)

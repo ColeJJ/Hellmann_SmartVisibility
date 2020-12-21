@@ -3,6 +3,7 @@ package de.hsos.geois.ws2021.views.device;
 import com.vaadin.flow.component.AbstractField;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.Grid;
@@ -20,7 +21,9 @@ import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouteAlias;
 
 import de.hsos.geois.ws2021.data.entity.Device;
+import de.hsos.geois.ws2021.data.entity.User;
 import de.hsos.geois.ws2021.data.service.DeviceDataService;
+import de.hsos.geois.ws2021.data.service.UserDataService;
 import de.hsos.geois.ws2021.views.MainView;
 
 @Route(value = "device", layout = MainView.class)
@@ -38,6 +41,8 @@ public class DeviceView extends Div {
     private TextField serialNr = new TextField();
     private BigDecimalField purchasePrice = new BigDecimalField();
     private BigDecimalField salesPrice = new BigDecimalField();
+    
+    private ComboBox<User> user = new ComboBox<User>();
 
 
     // TODO: Refactore these buttons in a separate (abstract) form class
@@ -106,6 +111,11 @@ public class DeviceView extends Div {
 
         createGridLayout(splitLayout);
         createEditorLayout(splitLayout);
+        
+        //user zur combobox hinzufügen
+        
+        user.setItems(UserDataService.getInstance().getAll());
+       
 
         add(splitLayout);
     }
@@ -124,6 +134,7 @@ public class DeviceView extends Div {
         addFormItem(editorDiv, formLayout, serialNr, "Serial number");
         addFormItem(editorDiv, formLayout, purchasePrice, "Purchase price");
         addFormItem(editorDiv, formLayout, salesPrice, "Sales price");
+        addFormItem(editorDiv, formLayout, user, "User");
         createButtonLayout(editorLayoutDiv);
 
         splitLayout.addToSecondary(editorLayoutDiv);

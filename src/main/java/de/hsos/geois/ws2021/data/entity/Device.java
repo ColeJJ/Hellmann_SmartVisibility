@@ -4,15 +4,28 @@ import java.math.BigDecimal;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.ManyToOne;
 
 import de.hsos.geois.ws2021.data.AbstractEntity;
 
 @Entity
 public class Device extends AbstractEntity {
 
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
+
 	private String name;
 	
 	private String artNr;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	private User user;
 	
 	@Column(unique=true)
 	private String serialNr;
