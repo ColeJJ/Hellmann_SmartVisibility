@@ -41,7 +41,7 @@ public class UserView extends Div {
     private TextField phone = new TextField();
     private DatePicker dateOfBirth = new DatePicker();
     private TextField occupation = new TextField();
-
+    
     private Button cancel = new Button("Cancel");
     private Button save = new Button("Save");
 

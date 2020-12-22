@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-Application<mydevicemanager>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "console": "internalConsole",
+            "mainClass": "de.hsos.geois.ws2021.Application",
+            "projectName": "mydevicemanager",
+            "args": ""
+        }
+    ]
+}
