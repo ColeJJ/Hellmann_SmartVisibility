@@ -12,6 +12,7 @@ import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.splitlayout.SplitLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
@@ -24,6 +25,7 @@ import de.hsos.geois.ws2021.data.entity.Device;
 import de.hsos.geois.ws2021.data.entity.User;
 import de.hsos.geois.ws2021.data.service.UserDataService;
 import de.hsos.geois.ws2021.views.MainView;
+import de.hsos.geois.ws2021.views.device.DeviceDataProvider;
 
 @Route(value = "user", layout = MainView.class)
 @PageTitle("MyDeviceManager")
@@ -33,7 +35,8 @@ public class UserView extends Div {
 
 	private static final long serialVersionUID = 4939100739729795870L;
 
-	private Grid<User> grid;
+    private Grid<User> grid;
+    private Grid<Device> gridDevice;
 
     private TextField firstName = new TextField();
     private TextField lastName = new TextField();
@@ -121,6 +124,12 @@ public class UserView extends Div {
         editorDiv.setId("editor");
         editorLayoutDiv.add(editorDiv);
 
+        //Device Grid
+        gridDevice = new Grid<>(Device.class);
+	    gridDevice.setColumns("name", "artNr");
+        gridDevice.setDataProvider(new DeviceDataProvider());
+        
+
         FormLayout formLayout = new FormLayout();
         addFormItem(editorDiv, formLayout, firstName, "First name");
         addFormItem(editorDiv, formLayout, lastName, "Last name");
@@ -128,6 +137,7 @@ public class UserView extends Div {
         addFormItem(editorDiv, formLayout, phone, "Phone");
         addFormItem(editorDiv, formLayout, dateOfBirth, "Date of birth");
         addFormItem(editorDiv, formLayout, occupation, "Occupation");
+        addGridLayout(editorDiv, formLayout, gridDevice, "Devices");
         createButtonLayout(editorLayoutDiv);
 
         splitLayout.addToSecondary(editorLayoutDiv);
@@ -150,6 +160,14 @@ public class UserView extends Div {
         wrapper.setId("grid-wrapper");
         wrapper.setWidthFull();
         splitLayout.addToPrimary(wrapper);
+        wrapper.add(grid);
+    }
+
+    private void addGridLayout(Div wrapper, FormLayout formLayout, Grid grid, String fieldName) {
+        formLayout.addFormItem(grid, fieldName);
+        grid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
+        grid.setHeightByRows(true);
+        wrapper.add(formLayout);
         wrapper.add(grid);
     }
 
