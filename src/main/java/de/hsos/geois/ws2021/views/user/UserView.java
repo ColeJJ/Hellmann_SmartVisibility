@@ -23,6 +23,7 @@ import com.vaadin.flow.router.RouteAlias;
 
 import de.hsos.geois.ws2021.data.entity.Device;
 import de.hsos.geois.ws2021.data.entity.User;
+import de.hsos.geois.ws2021.data.service.DeviceDataService;
 import de.hsos.geois.ws2021.data.service.UserDataService;
 import de.hsos.geois.ws2021.views.MainView;
 import de.hsos.geois.ws2021.views.device.DeviceDataProvider;
@@ -36,7 +37,7 @@ public class UserView extends Div {
 	private static final long serialVersionUID = 4939100739729795870L;
 
     private Grid<User> grid;
-    private Grid<Device> gridDevice;
+    private Grid<Device> gridDevice = new Grid<>(Device.class);
 
     private TextField firstName = new TextField();
     private TextField lastName = new TextField();
@@ -66,7 +67,9 @@ public class UserView extends Div {
 	    // when a row is selected or deselected, populate form
 	    grid.asSingleSelect().addValueChangeListener(event -> {
 	        if (event.getValue() != null) {
-	            User personFromBackend = personService.getById(event.getValue().getId());
+                User personFromBackend = personService.getById(event.getValue().getId());
+                //also fill grids when user is selected by user
+                gridDevice.setItems(DeviceDataService.getInstance().fetchDevicesByUser(personFromBackend, 0, 0, null));
 	            // when a row is selected but the data is no longer available, refresh grid
 	            if (personFromBackend != null) {
 	                populateForm(personFromBackend);
@@ -125,10 +128,7 @@ public class UserView extends Div {
         editorLayoutDiv.add(editorDiv);
 
         //Device Grid
-        gridDevice = new Grid<>(Device.class);
-	    gridDevice.setColumns("name", "artNr");
-        gridDevice.setDataProvider(new DeviceDataProvider());
-        
+	    gridDevice.setColumns("name", "artNr");       
 
         FormLayout formLayout = new FormLayout();
         addFormItem(editorDiv, formLayout, firstName, "First name");

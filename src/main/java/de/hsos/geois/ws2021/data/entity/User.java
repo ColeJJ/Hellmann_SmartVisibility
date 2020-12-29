@@ -2,7 +2,6 @@ package de.hsos.geois.ws2021.data.entity;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 
 import de.hsos.geois.ws2021.data.AbstractEntity;
