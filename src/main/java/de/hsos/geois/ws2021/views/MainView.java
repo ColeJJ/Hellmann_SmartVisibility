@@ -19,12 +19,12 @@ import com.vaadin.flow.component.tabs.TabsVariant;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.RouterLink;
 import com.vaadin.flow.server.PWA;
-import com.vaadin.flow.theme.Theme;
 
 import de.hsos.geois.ws2021.views.user.UserView;
 import de.hsos.geois.ws2021.views.MainView;
 import de.hsos.geois.ws2021.views.about.AboutView;
 import de.hsos.geois.ws2021.views.device.DeviceView;
+import de.hsos.geois.ws2021.views.offer.OfferView;
 
 /**
  * The main view is a top-level placeholder for other views.
@@ -88,6 +88,7 @@ public class MainView extends AppLayout {
         return new Tab[] {
             createTab("Users", UserView.class),
             createTab("Devices", DeviceView.class),
+            createTab("Offers", OfferView.class),
             createTab("About", AboutView.class)
         };
     }

@@ -3,7 +3,6 @@ package de.hsos.geois.ws2021.views.user;
 import com.vaadin.flow.component.AbstractField;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
-import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.formlayout.FormLayout;
@@ -12,7 +11,6 @@ import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
-import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.splitlayout.SplitLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
@@ -26,7 +24,6 @@ import de.hsos.geois.ws2021.data.entity.User;
 import de.hsos.geois.ws2021.data.service.DeviceDataService;
 import de.hsos.geois.ws2021.data.service.UserDataService;
 import de.hsos.geois.ws2021.views.MainView;
-import de.hsos.geois.ws2021.views.device.DeviceDataProvider;
 
 @Route(value = "user", layout = MainView.class)
 @PageTitle("MyDeviceManager")
