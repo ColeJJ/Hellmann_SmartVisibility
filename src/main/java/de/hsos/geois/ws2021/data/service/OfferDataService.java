@@ -50,7 +50,7 @@ public class OfferDataService extends DataService<Offer> {
 
 	@Override
 	protected String getAllQuery() {
-		return "SELECT o FROM Offer o ORDER BY o.name";
+		return "SELECT o FROM Offer o ORDER BY o.offNr";
 	}
 
 	@Override

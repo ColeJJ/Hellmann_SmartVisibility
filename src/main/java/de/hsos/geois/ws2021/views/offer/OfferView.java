@@ -11,7 +11,6 @@ import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.splitlayout.SplitLayout;
-import com.vaadin.flow.component.textfield.BigDecimalField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.ValidationException;
@@ -36,9 +35,9 @@ public class OfferView extends Div {
 
     private TextField customerNr = new TextField();
     private TextField customerName = new TextField();
-    private TextField customerAddresse = new TextField();
-    private BigDecimalField purchasePrice = new BigDecimalField();
-    private BigDecimalField salesPrice = new BigDecimalField();
+    private TextField customerAddress = new TextField();
+    private TextField offNr = new TextField();
+
 
 
     // TODO: Refactore these buttons in a separate (abstract) form class
@@ -56,7 +55,7 @@ public class OfferView extends Div {
         this.offerService = OfferDataService.getInstance();
         // Configure Grid
         grid = new Grid<>(Offer.class);
-        grid.setColumns("offNr", "customerName", "customerNr");
+        grid.setColumns("offNr", "customerNr", "customerName", "customerAddress");
         grid.setDataProvider(new OfferDataProvider());
         grid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
         grid.setHeightFull();
@@ -120,11 +119,10 @@ public class OfferView extends Div {
         editorLayoutDiv.add(editorDiv);
 
         FormLayout formLayout = new FormLayout();
+        addFormItem(editorDiv, formLayout, offNr, "Offer number");
         addFormItem(editorDiv, formLayout, customerNr, "Customer Number");
         addFormItem(editorDiv, formLayout, customerName, "Customer name");
-        addFormItem(editorDiv, formLayout, customerAddresse, "Customer Addresse");
-        addFormItem(editorDiv, formLayout, purchasePrice, "Purchase price");
-        addFormItem(editorDiv, formLayout, salesPrice, "Sales price");
+        addFormItem(editorDiv, formLayout, customerAddress, "Customer Addresse");
         createButtonLayout(editorLayoutDiv);
 
         splitLayout.addToSecondary(editorLayoutDiv);
