@@ -12,14 +12,6 @@ import de.hsos.geois.ws2021.data.AbstractEntity;
 @Entity
 public class Device extends AbstractEntity {
 
-	public User getUser() {
-		return user;
-	}
-
-	public void setUser(User user) {
-		this.user = user;
-	}
-
 	private String name;
 	
 	private String artNr;
@@ -73,7 +65,12 @@ public class Device extends AbstractEntity {
 		this.salesPrice = salesPrice;
 	}
 
-	
-	
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
 
 }

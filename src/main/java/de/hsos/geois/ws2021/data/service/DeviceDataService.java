@@ -11,6 +11,7 @@ import com.vaadin.flow.data.provider.SortDirection;
 
 import de.hsos.geois.ws2021.data.EntityManagerHandler;
 import de.hsos.geois.ws2021.data.entity.Device;
+import de.hsos.geois.ws2021.data.entity.User;
 
 @Service
 public class DeviceDataService extends DataService<Device> {
@@ -85,6 +86,26 @@ public class DeviceDataService extends DataService<Device> {
 		
 		return EntityManagerHandler.runInTransaction(em -> em.createQuery(queryString, Device.class)
 				 .setParameter("filter", preparedFilter)
+				 .setFirstResult(offset)
+			     .setMaxResults(limit)
+				 .getResultList());
+	}
+
+	public Collection<Device> fetchDevicesByUser(User personFromBackend, int limit, int offset, List<QuerySortOrder> sortOrders) {
+
+		// By default sort on name
+		if (sortOrders == null || sortOrders.isEmpty()) {
+			sortOrders = new ArrayList<>();
+		    sortOrders.add(new QuerySortOrder(SORT_ON_NAME, SortDirection.ASCENDING));
+		}
+		
+		String sortString = getSortingString(sortOrders);
+		
+		String queryString = "SELECT d FROM Device d WHERE d.user.id = "
+				+ personFromBackend.getId()
+				+ sortString;
+		
+		return EntityManagerHandler.runInTransaction(em -> em.createQuery(queryString, Device.class)
 				 .setFirstResult(offset)
 			     .setMaxResults(limit)
 				 .getResultList());
