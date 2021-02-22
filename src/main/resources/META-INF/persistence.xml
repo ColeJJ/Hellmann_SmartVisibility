@@ -7,9 +7,10 @@
 	  	<class>de.hsos.geois.ws2021.data.entity.User</class>
 	  	<class>de.hsos.geois.ws2021.data.entity.Customer</class>
 	  	<class>de.hsos.geois.ws2021.data.entity.Device</class>
+		<class>de.hsos.geois.ws2021.data.entity.Offer</class>
 	    <properties>
 	      <property name="javax.persistence.jdbc.driver" value="org.h2.Driver" />
-	      <property name="javax.persistence.jdbc.url" value="jdbc:h2:tcp://localhost/C:/Users/Henrik/test" />
+	      <property name="javax.persistence.jdbc.url" value="jdbc:h2:/Users/tounland/data/test" />
 	      <property name="javax.persistence.jdbc.user" value="sa" />
 	      <property name="javax.persistence.jdbc.password" value="" /> 
 	      <property name="eclipselink.ddl-generation" value="create-or-extend-tables"/>
