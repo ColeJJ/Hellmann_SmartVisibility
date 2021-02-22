@@ -20,10 +20,10 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouteAlias;
 
+import de.hsos.geois.ws2021.data.entity.Customer;
 import de.hsos.geois.ws2021.data.entity.Device;
-import de.hsos.geois.ws2021.data.entity.User;
+import de.hsos.geois.ws2021.data.service.CustomerDataService;
 import de.hsos.geois.ws2021.data.service.DeviceDataService;
-import de.hsos.geois.ws2021.data.service.UserDataService;
 import de.hsos.geois.ws2021.views.MainView;
 
 @Route(value = "device", layout = MainView.class)
@@ -42,7 +42,7 @@ public class DeviceView extends Div {
     private BigDecimalField purchasePrice = new BigDecimalField();
     private BigDecimalField salesPrice = new BigDecimalField();
     
-    private ComboBox<User> user = new ComboBox<User>();
+    private ComboBox<Customer> customer = new ComboBox<Customer>();
 
 
     // TODO: Refactore these buttons in a separate (abstract) form class
@@ -68,7 +68,8 @@ public class DeviceView extends Div {
         // when a row is selected or deselected, populate form
         grid.asSingleSelect().addValueChangeListener(event -> {
             if (event.getValue() != null) {
-                Device deviceFromBackend = deviceService.getById(event.getValue().getId());
+//              Device deviceFromBackend = deviceService.getById(event.getValue().getId());
+            	Device deviceFromBackend = event.getValue();
                 // when a row is selected but the data is no longer available, refresh grid
                 if (deviceFromBackend != null) {
                     populateForm(deviceFromBackend	);
@@ -97,7 +98,7 @@ public class DeviceView extends Div {
                     this.currentDevice = new Device();
                 }
                 binder.writeBean(this.currentDevice);
-                deviceService.update(this.currentDevice);
+                this.currentDevice = deviceService.update(this.currentDevice);
                 clearForm();
                 refreshGrid();
                 Notification.show("Device details stored.");
@@ -105,17 +106,31 @@ public class DeviceView extends Div {
                 Notification.show("An exception happened while trying to store the device details.");
             }
         });
+        
+        // add users to combobox user
+        customer.setItems(CustomerDataService.getInstance().getAll());
+        
+        customer.addValueChangeListener(event -> {
+        	if (event.isFromClient() && event.getValue()!=null) {
+        		event.getValue().addDevice(this.currentDevice);
+        		CustomerDataService.getInstance().save(event.getValue());
+        		this.currentDevice.setCustomer(event.getValue());
+        		try {
+					binder.writeBean(this.currentDevice);
+				} catch (ValidationException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+                this.currentDevice = deviceService.update(this.currentDevice);
+        	}
+        });
+        
 
         SplitLayout splitLayout = new SplitLayout();
         splitLayout.setSizeFull();
 
         createGridLayout(splitLayout);
         createEditorLayout(splitLayout);
-        
-        //user zur combobox hinzufügen
-        
-        user.setItems(UserDataService.getInstance().getAll());
-       
 
         add(splitLayout);
     }
@@ -134,7 +149,7 @@ public class DeviceView extends Div {
         addFormItem(editorDiv, formLayout, serialNr, "Serial number");
         addFormItem(editorDiv, formLayout, purchasePrice, "Purchase price");
         addFormItem(editorDiv, formLayout, salesPrice, "Sales price");
-        addFormItem(editorDiv, formLayout, user, "User");
+        addFormItem(editorDiv, formLayout, customer, "Customer");
         createButtonLayout(editorLayoutDiv);
 
         splitLayout.addToSecondary(editorLayoutDiv);

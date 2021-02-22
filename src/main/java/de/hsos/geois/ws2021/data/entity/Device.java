@@ -13,11 +13,10 @@ import de.hsos.geois.ws2021.data.AbstractEntity;
 public class Device extends AbstractEntity {
 
 	private String name;
-	
 	private String artNr;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
-	private User user;
+	private Customer customer;
 	
 	@Column(unique=true)
 	private String serialNr;
@@ -65,12 +64,25 @@ public class Device extends AbstractEntity {
 		this.salesPrice = salesPrice;
 	}
 
-	public User getUser() {
-		return user;
+	public Customer getCustomer() {
+		return customer;
 	}
 
-	public void setUser(User user) {
-		this.user = user;
+	public void setCustomer(Customer customer) {
+		this.customer = customer;
 	}
+	
+//	@Override
+//    public boolean equals(Object o) {
+//        if (this == o) return true;
+//        if (!(o instanceof Device )) return false;
+//        return getId() != null && getId().equals(((Device) o).getId());
+//    }
+// 
+//    @Override
+//    public int hashCode() {
+//        return getClass().hashCode();
+//    }
+
 
 }

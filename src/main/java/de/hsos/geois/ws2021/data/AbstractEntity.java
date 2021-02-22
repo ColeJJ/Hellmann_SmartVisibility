@@ -7,10 +7,10 @@ import javax.persistence.MappedSuperclass;
 @MappedSuperclass
 public abstract class AbstractEntity {
     
-	private Long id;
-
-    @Id
+	@Id  //Moved up from getId()
     @GeneratedValue
+	private Long id;
+	
     public Long getId() {
         return id;
     }
@@ -29,9 +29,15 @@ public abstract class AbstractEntity {
 
     @Override
     public boolean equals(Object obj) {
+    	
         if (!(obj instanceof AbstractEntity)) {
             return false; // null or other class
         }
+        
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+
         AbstractEntity other = (AbstractEntity) obj;
 
         if (id != null) {

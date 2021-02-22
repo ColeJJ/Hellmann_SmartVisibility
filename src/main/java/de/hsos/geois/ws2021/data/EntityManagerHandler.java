@@ -53,17 +53,5 @@ public class EntityManagerHandler {
 				EntityManagerHandler.closeEntityManager();
 			}
 		}
-	}
-
-//    public static void beginTransaction() {
-//        getEntityManager().getTransaction().begin();
-//    }
-
-//    public static void rollback() {
-//        getEntityManager().getTransaction().rollback();
-//    }
-//
-//    public static void commit() {
-//        getEntityManager().getTransaction().commit();
-//    } 
+	} 
 }

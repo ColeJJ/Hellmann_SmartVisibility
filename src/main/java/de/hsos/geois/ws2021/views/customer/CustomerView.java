@@ -1,4 +1,7 @@
-package de.hsos.geois.ws2021.views.user;
+package de.hsos.geois.ws2021.views.customer;
+
+import java.util.ArrayList;
+import java.util.Collection;
 
 import com.vaadin.flow.component.AbstractField;
 import com.vaadin.flow.component.button.Button;
@@ -15,57 +18,71 @@ import com.vaadin.flow.component.splitlayout.SplitLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.ValidationException;
+import com.vaadin.flow.data.renderer.NativeButtonRenderer;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouteAlias;
 
-import de.hsos.geois.ws2021.data.entity.User;
-import de.hsos.geois.ws2021.data.service.UserDataService;
+import de.hsos.geois.ws2021.data.entity.Device;
+import de.hsos.geois.ws2021.data.entity.Customer;
+import de.hsos.geois.ws2021.data.service.DeviceDataService;
+import de.hsos.geois.ws2021.data.service.CustomerDataService;
 import de.hsos.geois.ws2021.views.MainView;
 
-@Route(value = "user", layout = MainView.class)
+@Route(value = "customer", layout = MainView.class)
 @PageTitle("MyDeviceManager")
 @CssImport("./styles/views/mydevicemanager/my-device-manager-view.css")
-@RouteAlias(value = "", layout = MainView.class)
-public class UserView extends Div {
+@RouteAlias(value = "customer", layout = MainView.class)
+public class CustomerView extends Div {
 
 	private static final long serialVersionUID = 4939100739729795870L;
 
-	private Grid<User> grid;
-
+	private Grid<Customer> grid;
+	
+	private TextField companyName = new TextField();
+	private TextField salutation = new TextField();
     private TextField firstName = new TextField();
     private TextField lastName = new TextField();
     private TextField email = new TextField();
     private TextField phone = new TextField();
-    private DatePicker dateOfBirth = new DatePicker();
-    private TextField occupation = new TextField();
+    
+    private TextField addressSecondLine = new TextField();
+    private TextField streetAndNr = new TextField();
+    private TextField place = new TextField();
+    private TextField zipCode = new TextField();
+    
+    private Grid<Device> deviceGrid = new Grid<Device>();
 
     private Button cancel = new Button("Cancel");
     private Button save = new Button("Save");
 
-    private Binder<User> binder;
+    private Binder<Customer> binder;
 
-    private User user = new User();
+    private Customer customer = new Customer();
 
-    private UserDataService personService;
+    private CustomerDataService customerService;
 
-    public UserView() {
+    public CustomerView() {
         setId("my-device-manager-view");
-        this.personService = UserDataService.getInstance();
+        this.customerService = CustomerDataService.getInstance();
         // Configure Grid
-        grid = new Grid<>(User.class);
-        grid.setColumns("firstName", "lastName", "email", "phone", "dateOfBirth", "occupation");
-        grid.setDataProvider(new UserDataProvider());
+        grid = new Grid<>(Customer.class);
+        grid.setColumns("companyName", "salutation", "firstName", "lastName", "email", "phone", "place");
+        grid.setDataProvider(new CustomerDataProvider());
         grid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
         grid.setHeightFull();
 
         // when a row is selected or deselected, populate form
         grid.asSingleSelect().addValueChangeListener(event -> {
             if (event.getValue() != null) {
-                User personFromBackend = personService.getById(event.getValue().getId());    
+            	Customer customerFromBackend = customerService.getById(event.getValue().getId());
+                Collection<Device> devices =  DeviceDataService.getInstance().getDevicesOfCustomer(customerFromBackend);
+                System.out.println("Beim Laden des CustomerFromBackend " + devices.size());
+//                deviceGrid.setItems(devices);
+                
                 // when a row is selected but the data is no longer available, refresh grid
-                if (personFromBackend != null) {
-                    populateForm(personFromBackend);
+                if (customerFromBackend != null) {
+                    populateForm(customerFromBackend);
                 } else {
                     refreshGrid();
                 }
@@ -75,7 +92,7 @@ public class UserView extends Div {
         });
 
         // Configure Form
-        binder = new Binder<>(User.class);
+        binder = new Binder<>(Customer.class);
 
         // Bind fields. This where you'd define e.g. validation rules
         binder.bindInstanceFields(this);
@@ -87,14 +104,14 @@ public class UserView extends Div {
 
         save.addClickListener(e -> {
             try {
-                if (this.user == null) {
-                    this.user = new User();
+                if (this.customer == null) {
+                    this.customer = new Customer();
                 }
-                binder.writeBean(this.user);
-                personService.update(this.user);
+                binder.writeBean(this.customer);
+                this.customer = customerService.update(this.customer);
                 clearForm();
                 refreshGrid();
-                Notification.show("User details stored.");
+                Notification.show("Customer details stored.");
             } catch (ValidationException validationException) {
                 Notification.show("An exception happened while trying to store the user details.");
             }
@@ -111,7 +128,7 @@ public class UserView extends Div {
     }
 
     /**
-     * Creates the UserForm
+     * Creates the CustomerForm
      * @param splitLayout
      */
     private void createEditorLayout(SplitLayout splitLayout) {
@@ -123,13 +140,44 @@ public class UserView extends Div {
         editorLayoutDiv.add(editorDiv);
 
         FormLayout formLayout = new FormLayout();
+        addFormItem(editorDiv, formLayout, companyName, "Company name");
+        addFormItem(editorDiv, formLayout, salutation, "Salutation");
         addFormItem(editorDiv, formLayout, firstName, "First name");
         addFormItem(editorDiv, formLayout, lastName, "Last name");
         addFormItem(editorDiv, formLayout, email, "Email");
         addFormItem(editorDiv, formLayout, phone, "Phone");
-        addFormItem(editorDiv, formLayout, dateOfBirth, "Date of birth");
-        addFormItem(editorDiv, formLayout, occupation, "Occupation");
-
+        addFormItem(editorDiv, formLayout, addressSecondLine, "Address 2nd line");
+        addFormItem(editorDiv, formLayout, streetAndNr, "Street and Nr");
+        addFormItem(editorDiv, formLayout, zipCode, "Zipcode");
+        addFormItem(editorDiv, formLayout, place, "Place");
+        
+        // add grid
+        deviceGrid.addColumn(Device::getArtNr).setHeader("ArtNr");
+        deviceGrid.addColumn(Device::getName).setHeader("Name");
+        deviceGrid.addColumn(Device::getSerialNr).setHeader("SerialNr");
+        deviceGrid.addColumn(Device::getSalesPrice).setHeader("SalesPrice");
+        deviceGrid.addColumn(
+        	    new NativeButtonRenderer<>("Remove Device",
+        	       clickedDevice -> {
+        	           this.customer.removeDevice(clickedDevice);
+        	           clickedDevice.setCustomer(null);
+					   // persist customer
+        	           try {
+							binder.writeBean(this.customer);
+							this.customer = customerService.update(this.customer);
+						} catch (ValidationException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					   // persist clickedDevice
+        	           DeviceDataService.getInstance().save(clickedDevice);
+        	           populateForm(this.customer);
+        	    })
+        	);
+        deviceGrid.setWidthFull();
+        
+        formLayout.add(deviceGrid);
+        
         createButtonLayout(editorLayoutDiv);
 
         splitLayout.addToSecondary(editorLayoutDiv);
@@ -166,11 +214,17 @@ public class UserView extends Div {
     }
 
     private void clearForm() {
-        populateForm(null);
+        populateForm(null);   
     }
 
-    private void populateForm(User user) {
-    	this.user = user;
-    	binder.readBean(this.user);
+    private void populateForm(Customer customer) {
+    	this.customer = customer;
+    	binder.readBean(this.customer);
+    	if (customer!=null) {
+    		binder.bindInstanceFields(this);
+	        deviceGrid.setItems(this.customer.getDevices());
+    	} else {
+    		deviceGrid.setItems(new ArrayList<Device>());
+    	}
     }
 }

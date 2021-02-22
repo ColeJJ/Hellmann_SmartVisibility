@@ -1,13 +1,10 @@
 package de.hsos.geois.ws2021.data.entity;
 
-import javax.persistence.CascadeType;
+import java.time.LocalDate;
+
 import javax.persistence.Entity;
-import javax.persistence.OneToMany;
 
 import de.hsos.geois.ws2021.data.AbstractEntity;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collection;
 
 @Entity
 public class User extends AbstractEntity {
@@ -19,11 +16,7 @@ public class User extends AbstractEntity {
 	private LocalDate dateOfBirth;
 	private String occupation;
 	
-	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-	private Collection<Device> devices;
-	
 	public User() {
-		this.devices = new ArrayList<Device>();
 	}
 
 	public String getFirstName() {
@@ -73,23 +66,11 @@ public class User extends AbstractEntity {
 	public void setOccupation(String occupation) {
 		this.occupation = occupation;
 	}
-
-	public Collection<Device> getDevices() {
-		return devices;
-	}
 	
-	public boolean addDevice(Device device) {
-		return getDevices().add(device);
-	}
-	
-	public boolean removeDevice(Device device) {
-		return getDevices().remove(device);
-	}
-	
-	public String toString()
-	{
+	public String toString() {
 		return getLastName() + ", " + getFirstName();
 	}
+	
 	
 
 }
