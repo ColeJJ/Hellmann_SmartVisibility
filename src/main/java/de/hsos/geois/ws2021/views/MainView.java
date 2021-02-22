@@ -70,7 +70,7 @@ public class MainView extends AppLayout {
         logoLayout.setId("logo");
         logoLayout.setAlignItems(FlexComponent.Alignment.CENTER);
         logoLayout.add(new Image("images/logo.png", "MyDeviceManager logo"));
-        logoLayout.add(new H1("MyDeviceManager"));
+        logoLayout.add(new H1(""));
         layout.add(logoLayout, menu);
         return layout;
     }
