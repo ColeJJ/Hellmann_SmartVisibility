@@ -21,9 +21,9 @@ public class OfferPositionDataService extends DataService<OfferPosition> {
 	private static OfferPositionDataService INSTANCE;
     
     public static final String SORT_ON_ID = "op.id";
-	public static final String SORT_ON_OFFPONR = "op.offPoNr";
-	public static final String SORT_ON_OFFERPONAME = "op.offerPoName";
+	public static final String SORT_ON_DEVICETYP = "op.deviceTyp";
 	public static final String SORT_ON_QUANTITY = "op.quantity";
+	public static final String SORT_ON_PRICE = "op.price";
 	
 	private OfferPositionDataService() {
 		super();
@@ -51,7 +51,7 @@ public class OfferPositionDataService extends DataService<OfferPosition> {
 
 	@Override
 	protected String getAllQuery() {
-		return "SELECT op FROM OfferPosition op ORDER BY op.offPoNr";
+		return "SELECT op FROM OfferPosition op ORDER BY op.deviceTyp";
 	}
 
 	@Override
@@ -61,9 +61,9 @@ public class OfferPositionDataService extends DataService<OfferPosition> {
 	
 	public int countOfferPositions(String filter) {
 		String queryString = "SELECT count(op) FROM OfferPosition op WHERE (CONCAT(op.id, '') LIKE :filter "
-				+ "OR LOWER(op.offPoNr) LIKE :filter "
-				+ "OR LOWER(op.offerPoName) LIKE :filter "
-				+ "OR LOWER(op.quantity) LIKE :filter)";
+				+ "OR LOWER(op.deviceTyp) LIKE :filter "
+				+ "OR LOWER(op.quantity) LIKE :filter "
+				+ "OR LOWER(op.price) LIKE :filter)";
 		return super.count(queryString, filter);
 	}
 	
@@ -74,15 +74,15 @@ public class OfferPositionDataService extends DataService<OfferPosition> {
 		// By default sort on name
 		if (sortOrders == null || sortOrders.isEmpty()) {
 			sortOrders = new ArrayList<>();
-		    sortOrders.add(new QuerySortOrder(SORT_ON_OFFERPONAME, SortDirection.ASCENDING));
+		    sortOrders.add(new QuerySortOrder(SORT_ON_DEVICETYP, SortDirection.ASCENDING));
 		}
 		
 		String sortString = getSortingString(sortOrders);
 		
 		String queryString = "SELECT op FROM OfferPosition op WHERE (CONCAT(op.id, '') LIKE :filter "
-				+ "OR LOWER(op.offPoNr) LIKE :filter "
-				+ "OR LOWER(op.offerPoName) LIKE :filter "
-				+ "OR LOWER(op.quantity) LIKE :filter)" + sortString;
+				+ "OR LOWER(op.deviceTyp) LIKE :filter "
+				+ "OR LOWER(op.quantity) LIKE :filter "
+				+ "OR LOWER(op.price) LIKE :filter)" + sortString;
 		
 		return EntityManagerHandler.runInTransaction(em -> em.createQuery(queryString, OfferPosition.class)
 				 .setParameter("filter", preparedFilter)

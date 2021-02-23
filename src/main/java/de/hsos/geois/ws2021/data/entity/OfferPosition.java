@@ -9,9 +9,9 @@ import de.hsos.geois.ws2021.data.AbstractEntity;
 @Entity
 public class OfferPosition extends AbstractEntity {
 
-	private String offPoNr;
-	private String offerPoName;
+	private String deviceTyp;
 	private String quantity;
+	private String price;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	private Offer offer;
@@ -22,17 +22,17 @@ public class OfferPosition extends AbstractEntity {
 	public void setOffer(Offer offer) {
 		this.offer = offer;
 	}
-	public String getOffPoNr() {
-		return offPoNr;
+	public String getDeviceTyp() {
+		return deviceTyp;
 	}
-	public void setOffPoNr(String offPoNr) {
-		this.offPoNr = offPoNr;
+	public void setDeviceTyp(String deviceTyp) {
+		this.deviceTyp = deviceTyp;
 	}
-	public String getOfferPoName() {
-		return offerPoName;
+	public String getPrice() {
+		return price;
 	}
-	public void setOfferPoName(String offerPoName) {
-		this.offerPoName = offerPoName;
+	public void setPrice(String price) {
+		this.price = price;
 	}
 	public String getQuantity() {
 		return quantity;
@@ -40,5 +40,4 @@ public class OfferPosition extends AbstractEntity {
 	public void setQuantity(String quantity) {
 		this.quantity = quantity;
 	}
-
 }

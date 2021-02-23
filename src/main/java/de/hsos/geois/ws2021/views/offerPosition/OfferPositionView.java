@@ -36,9 +36,9 @@ public class OfferPositionView extends Div {
 
     private Grid<OfferPosition> grid;
 
-    private TextField offPoNr = new TextField();
-    private TextField offerPoName = new TextField();
+    private TextField deviceTyp = new TextField();
     private TextField quantity = new TextField();
+    private TextField price = new TextField();
 
     private ComboBox<Offer> offer = new ComboBox<Offer>();
 
@@ -58,7 +58,7 @@ public class OfferPositionView extends Div {
         this.offerPositionService = OfferPositionDataService.getInstance();
         // Configure Grid
         grid = new Grid<>(OfferPosition.class);
-        grid.setColumns("offPoNr", "offerPoName", "quantity");
+        grid.setColumns("deviceTyp", "quantity", "price");
         grid.setDataProvider(new OfferPositionDataProvider());
         grid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
         grid.setHeightFull();
@@ -140,9 +140,9 @@ public class OfferPositionView extends Div {
         editorLayoutDiv.add(editorDiv);
 
         FormLayout formLayout = new FormLayout();
-        addFormItem(editorDiv, formLayout, offPoNr, "Offerposition number");
-        addFormItem(editorDiv, formLayout, offerPoName, "Offerposition Name");
+        addFormItem(editorDiv, formLayout, deviceTyp, "Device Typ");
         addFormItem(editorDiv, formLayout, quantity, "Quantity");
+        addFormItem(editorDiv, formLayout, price, "Price");
         addFormItem(editorDiv, formLayout, offer, "Offer");
         createButtonLayout(editorLayoutDiv);
 
