@@ -1,5 +1,7 @@
 package de.hsos.geois.ws2021.views.offer;
 
+import java.util.ArrayList;
+
 import com.vaadin.flow.component.AbstractField;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -15,14 +17,17 @@ import com.vaadin.flow.component.splitlayout.SplitLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.ValidationException;
+import com.vaadin.flow.data.renderer.NativeButtonRenderer;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouteAlias;
 
-
+import de.hsos.geois.ws2021.data.entity.Device;
 import de.hsos.geois.ws2021.data.entity.Offer;
 import de.hsos.geois.ws2021.data.entity.OfferPosition;
+import de.hsos.geois.ws2021.data.service.DeviceDataService;
 import de.hsos.geois.ws2021.data.service.OfferDataService;
+import de.hsos.geois.ws2021.data.service.OfferPositionDataService;
 import de.hsos.geois.ws2021.views.MainView;
 
 @Route(value = "offer", layout = MainView.class)
@@ -39,8 +44,9 @@ public class OfferView extends Div {
     private TextField customerName = new TextField();
     private TextField customerAddress = new TextField();
     private TextField offNr = new TextField();
+    
+    private Grid<OfferPosition> offerPositionGrid = new Grid<OfferPosition>();
 
-    // TODO: Refactore these buttons in a separate (abstract) form class
     private Button cancel = new Button("Cancel");
     private Button save = new Button("Save");
 
@@ -124,6 +130,33 @@ public class OfferView extends Div {
         addFormItem(editorDiv, formLayout, customerName, "Customer name");
         addFormItem(editorDiv, formLayout, customerAddress, "Customer Addresse");
         createButtonLayout(editorLayoutDiv);
+        
+     // add grid
+        offerPositionGrid.addColumn(OfferPosition::getDeviceTyp).setHeader("Device Typ");
+        offerPositionGrid.addColumn(OfferPosition::getQuantity).setHeader("Quantity");
+        offerPositionGrid.addColumn(OfferPosition::getPrice).setHeader("Price");
+        offerPositionGrid.addColumn(
+        	    new NativeButtonRenderer<>("Remove",
+        	       clickedOfferPosition -> {
+        	           this.currentOffer.removeOfferPosition(clickedOfferPosition);
+        	           clickedOfferPosition.setOffer(null);
+					   // persist customer
+        	           try {
+							binder.writeBean(this.currentOffer);
+							this.currentOffer = offerService.update(this.currentOffer);
+						} catch (ValidationException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					   // persist clickedDevice
+        	           OfferPositionDataService.getInstance().save(clickedOfferPosition);
+        	           populateForm(this.currentOffer);
+        	    })
+        	);
+        
+        offerPositionGrid.setWidthFull();
+        formLayout.add(offerPositionGrid);
+        createButtonLayout(editorLayoutDiv);
 
         splitLayout.addToSecondary(editorLayoutDiv);
     }
@@ -165,5 +198,11 @@ public class OfferView extends Div {
     private void populateForm(Offer value) {
         this.currentOffer= value;
         binder.readBean(this.currentOffer);
+        if (currentOffer!=null) {
+    		binder.bindInstanceFields(this);
+	        offerPositionGrid.setItems(this.currentOffer.getOfferpositions());
+    	} else {
+    		offerPositionGrid.setItems(new ArrayList<OfferPosition>());
+    	}
     }
 }

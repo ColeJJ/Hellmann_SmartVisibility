@@ -58,7 +58,7 @@ public class OfferPositionView extends Div {
         this.offerPositionService = OfferPositionDataService.getInstance();
         // Configure Grid
         grid = new Grid<>(OfferPosition.class);
-        grid.setColumns("deviceTyp", "quantity", "price");
+        grid.setColumns("deviceTyp", "quantity", "price", "offer");
         grid.setDataProvider(new OfferPositionDataProvider());
         grid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
         grid.setHeightFull();
