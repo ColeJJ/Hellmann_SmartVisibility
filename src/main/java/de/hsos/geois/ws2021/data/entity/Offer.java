@@ -5,7 +5,9 @@ import java.util.Collection;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
 import de.hsos.geois.ws2021.data.AbstractEntity;
@@ -20,6 +22,17 @@ public class Offer extends AbstractEntity {
 	
 	@OneToMany(mappedBy = "offer", cascade = CascadeType.ALL, orphanRemoval = false)
 	private Collection<OfferPosition> offerpositions;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	private Customer customer;
+
+	public Customer getCustomer() {
+		return customer;
+	}
+
+	public void setCustomer(Customer customer) {
+		this.customer = customer;
+	}
 
 	public Offer() {
 		this.offerpositions = new ArrayList<OfferPosition>();

@@ -31,9 +31,25 @@ public class Customer extends AbstractEntity {
 	@OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = false)
 	private Collection<Device> devices;
 	
+	@OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = false)
+	private Collection<Offer> offers;
+
+	
 	public Customer() {
 		this.devices = new ArrayList<Device>();
+		this.offers = new ArrayList<Offer>();
 	}
+	
+
+	public Collection<Offer> getOffers() {
+		return offers;
+	}
+
+
+	public void setOffers(Collection<Offer> offers) {
+		this.offers = offers;
+	}
+
 
 	public String getCompanyName() {
 		return companyName;
@@ -131,6 +147,16 @@ public class Customer extends AbstractEntity {
 	public boolean removeDevice(Device device) {
 		return getDevices().remove(device);
 	}
+	
+	public boolean addOffer(Offer offer) {
+		return getOffers().add(offer);
+	}
+	
+	public boolean removeOffer(Offer offer) {
+		return getOffers().remove(offer);
+	}
+	
+	
 	
 	public String toString() {
 		return getLastName() + ", " + getFirstName();

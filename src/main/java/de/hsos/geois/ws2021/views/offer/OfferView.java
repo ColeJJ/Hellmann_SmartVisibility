@@ -22,9 +22,11 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouteAlias;
 
+import de.hsos.geois.ws2021.data.entity.Customer;
 import de.hsos.geois.ws2021.data.entity.Device;
 import de.hsos.geois.ws2021.data.entity.Offer;
 import de.hsos.geois.ws2021.data.entity.OfferPosition;
+import de.hsos.geois.ws2021.data.service.CustomerDataService;
 import de.hsos.geois.ws2021.data.service.DeviceDataService;
 import de.hsos.geois.ws2021.data.service.OfferDataService;
 import de.hsos.geois.ws2021.data.service.OfferPositionDataService;
@@ -44,6 +46,8 @@ public class OfferView extends Div {
     private TextField customerName = new TextField();
     private TextField customerAddress = new TextField();
     private TextField offNr = new TextField();
+    
+    private ComboBox<Customer> customer = new ComboBox<Customer>();
     
     private Grid<OfferPosition> offerPositionGrid = new Grid<OfferPosition>();
 
@@ -106,6 +110,24 @@ public class OfferView extends Div {
                 Notification.show("An exception happened while trying to store the offer details.");
             }
         });
+        
+        // add customers to combobox customers
+        customer.setItems(CustomerDataService.getInstance().getAll());
+        
+        customer.addValueChangeListener(event -> {
+        	if (event.isFromClient() && event.getValue()!=null) {
+        		event.getValue().addOffer(this.currentOffer);
+        		CustomerDataService.getInstance().save(event.getValue());
+        		this.currentOffer.setCustomer(event.getValue());
+        		try {
+					binder.writeBean(this.currentOffer);
+				} catch (ValidationException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+                this.currentOffer = offerService.update(this.currentOffer);
+        	}
+        });
 
         SplitLayout splitLayout = new SplitLayout();
         splitLayout.setSizeFull();
@@ -129,6 +151,7 @@ public class OfferView extends Div {
         addFormItem(editorDiv, formLayout, customerNr, "Customer Number");
         addFormItem(editorDiv, formLayout, customerName, "Customer name");
         addFormItem(editorDiv, formLayout, customerAddress, "Customer Addresse");
+        addFormItem(editorDiv, formLayout, customer, "Customer");
         createButtonLayout(editorLayoutDiv);
         
      // add grid
