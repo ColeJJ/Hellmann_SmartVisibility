@@ -6,7 +6,6 @@ import java.util.Collection;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
@@ -40,10 +39,6 @@ public class Offer extends AbstractEntity {
 	
 	public Collection<OfferPosition> getOfferpositions() {
 		return offerpositions;
-	}
-
-	public void setOfferpositions(Collection<OfferPosition> offerpositions) {
-		this.offerpositions = offerpositions;
 	}
 
 	public String getCustomerNr() {

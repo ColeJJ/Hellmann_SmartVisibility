@@ -21,7 +21,6 @@ import com.vaadin.flow.router.RouteAlias;
 
 import de.hsos.geois.ws2021.data.entity.Offer;
 import de.hsos.geois.ws2021.data.entity.OfferPosition;
-import de.hsos.geois.ws2021.data.service.CustomerDataService;
 import de.hsos.geois.ws2021.data.service.OfferDataService;
 import de.hsos.geois.ws2021.data.service.OfferPositionDataService;
 import de.hsos.geois.ws2021.views.MainView;
@@ -52,6 +51,7 @@ public class OfferPositionView extends Div {
     private OfferPosition currentOfferPosition = new OfferPosition();
 
     private OfferPositionDataService offerPositionService;
+
 
     public OfferPositionView() {
         setId("my-device-manager-view");
@@ -91,11 +91,9 @@ public class OfferPositionView extends Div {
 
         save.addClickListener(e -> {
             try {
-                if (this.currentOfferPosition == null) {
-                    this.currentOfferPosition = new OfferPosition();
-                }
                 binder.writeBean(this.currentOfferPosition);
-                offerPositionService.update(this.currentOfferPosition);
+                //if(this.currentOfferPosition.getOffer() != null) { this.connectWithOffer(); }
+                offerPositionService.save(this.currentOfferPosition);             
                 clearForm();
                 refreshGrid();
                 Notification.show("Offerposition details stored.");
@@ -107,8 +105,9 @@ public class OfferPositionView extends Div {
      // add offers to combobox offers
         offer.setItems(OfferDataService.getInstance().getAll());
         
+        //Listener only takes effect when currenOfferPostion is already given.. for new OfferPostions function connectWithOffer is used
         offer.addValueChangeListener(event -> {
-        	if (event.isFromClient() && event.getValue()!=null) {
+        	if (event.isFromClient() && event.getValue()!=null && this.currentOfferPosition.getId()!=null) {
         		event.getValue().addOfferPosition(this.currentOfferPosition);
         		OfferDataService.getInstance().save(event.getValue());
         		this.currentOfferPosition.setOffer(event.getValue());
@@ -119,8 +118,9 @@ public class OfferPositionView extends Div {
 					e1.printStackTrace();
 				}
                 this.currentOfferPosition = offerPositionService.update(this.currentOfferPosition);
+                refreshGrid();
         	}
-        });
+        }); 
 
         SplitLayout splitLayout = new SplitLayout();
         splitLayout.setSizeFull();
@@ -186,5 +186,10 @@ public class OfferPositionView extends Div {
     private void populateForm(OfferPosition value) {
         this.currentOfferPosition= value;
         binder.readBean(this.currentOfferPosition);
+    }
+
+    private void connectWithOffer() {
+        this.currentOfferPosition.getOffer().addOfferPosition(this.currentOfferPosition);
+        OfferDataService.getInstance().save(this.currentOfferPosition.getOffer());
     }
 }
