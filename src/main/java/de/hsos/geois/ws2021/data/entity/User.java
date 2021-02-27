@@ -69,7 +69,7 @@ public class User extends AbstractEntity {
 	
 	public String toString() {
 		return getLastName() + ", " + getFirstName();
-	}
+	};
 	
 	
 

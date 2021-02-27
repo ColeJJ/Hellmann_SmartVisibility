@@ -1,6 +1,4 @@
-package de.hsos.geois.ws2021.views.offer;
-
-import java.util.ArrayList;
+package de.hsos.geois.ws2021.views.offerPosition;
 
 import com.vaadin.flow.component.AbstractField;
 import com.vaadin.flow.component.button.Button;
@@ -17,66 +15,61 @@ import com.vaadin.flow.component.splitlayout.SplitLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.ValidationException;
-import com.vaadin.flow.data.renderer.NativeButtonRenderer;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouteAlias;
 
-import de.hsos.geois.ws2021.data.entity.Customer;
-import de.hsos.geois.ws2021.data.entity.Device;
 import de.hsos.geois.ws2021.data.entity.Offer;
 import de.hsos.geois.ws2021.data.entity.OfferPosition;
 import de.hsos.geois.ws2021.data.service.CustomerDataService;
-import de.hsos.geois.ws2021.data.service.DeviceDataService;
 import de.hsos.geois.ws2021.data.service.OfferDataService;
 import de.hsos.geois.ws2021.data.service.OfferPositionDataService;
 import de.hsos.geois.ws2021.views.MainView;
 
-@Route(value = "offer", layout = MainView.class)
+@Route(value = "offerposition", layout = MainView.class)
 @PageTitle("MyDeviceManager")
 @CssImport("./styles/views/mydevicemanager/my-device-manager-view.css")
-@RouteAlias(value = "offer", layout = MainView.class)
-public class OfferView extends Div {
+@RouteAlias(value = "offerposition", layout = MainView.class)
+public class OfferPositionView extends Div {
 
     private static final long serialVersionUID = 4740201357551960590L;
 
-    private Grid<Offer> grid;
+    private Grid<OfferPosition> grid;
 
-    private TextField customerNr = new TextField();
-    private TextField customerName = new TextField();
-    private TextField customerAddress = new TextField();
-    private TextField offNr = new TextField();
-    
-    private ComboBox<Customer> customer = new ComboBox<Customer>();
-    
-    private Grid<OfferPosition> offerPositionGrid = new Grid<OfferPosition>();
+    private TextField deviceTyp = new TextField();
+    private TextField quantity = new TextField();
+    private TextField price = new TextField();
 
+    private ComboBox<Offer> offer = new ComboBox<Offer>();
+
+
+    // TODO: Refactore these buttons in a separate (abstract) form class
     private Button cancel = new Button("Cancel");
     private Button save = new Button("Save");
 
-    private Binder<Offer> binder;
+    private Binder<OfferPosition> binder;
 
-    private Offer currentOffer = new Offer();
+    private OfferPosition currentOfferPosition = new OfferPosition();
 
-    private OfferDataService offerService;
+    private OfferPositionDataService offerPositionService;
 
-    public OfferView() {
+    public OfferPositionView() {
         setId("my-device-manager-view");
-        this.offerService = OfferDataService.getInstance();
+        this.offerPositionService = OfferPositionDataService.getInstance();
         // Configure Grid
-        grid = new Grid<>(Offer.class);
-        grid.setColumns("offNr", "customerNr", "customerName", "customerAddress");
-        grid.setDataProvider(new OfferDataProvider());
+        grid = new Grid<>(OfferPosition.class);
+        grid.setColumns("deviceTyp", "quantity", "price", "offer");
+        grid.setDataProvider(new OfferPositionDataProvider());
         grid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
         grid.setHeightFull();
 
         // when a row is selected or deselected, populate form
         grid.asSingleSelect().addValueChangeListener(event -> {
             if (event.getValue() != null) {
-                Offer offerFromBackend = offerService.getById(event.getValue().getId());
+                OfferPosition offerPositionFromBackend = offerPositionService.getById(event.getValue().getId());
                 // when a row is selected but the data is no longer available, refresh grid
-                if (offerFromBackend != null) {
-                    populateForm(offerFromBackend	);
+                if (offerPositionFromBackend != null) {
+                    populateForm(offerPositionFromBackend);
                 } else {
                     refreshGrid();
                 }
@@ -86,7 +79,7 @@ public class OfferView extends Div {
         });
 
         // Configure Form
-        binder = new Binder<>(Offer.class);
+        binder = new Binder<>(OfferPosition.class);
 
         // Bind fields. This where you'd define e.g. validation rules
         binder.bindInstanceFields(this);
@@ -98,34 +91,34 @@ public class OfferView extends Div {
 
         save.addClickListener(e -> {
             try {
-                if (this.currentOffer == null) {
-                    this.currentOffer = new Offer();
+                if (this.currentOfferPosition == null) {
+                    this.currentOfferPosition = new OfferPosition();
                 }
-                binder.writeBean(this.currentOffer);
-                offerService.update(this.currentOffer);
+                binder.writeBean(this.currentOfferPosition);
+                offerPositionService.update(this.currentOfferPosition);
                 clearForm();
                 refreshGrid();
-                Notification.show("Offer details stored.");
+                Notification.show("Offerposition details stored.");
             } catch (ValidationException validationException) {
-                Notification.show("An exception happened while trying to store the offer details.");
+                Notification.show("An exception happened while trying to store the offerposition details.");
             }
         });
         
-        // add customers to combobox customers
-        customer.setItems(CustomerDataService.getInstance().getAll());
+     // add offers to combobox offers
+        offer.setItems(OfferDataService.getInstance().getAll());
         
-        customer.addValueChangeListener(event -> {
+        offer.addValueChangeListener(event -> {
         	if (event.isFromClient() && event.getValue()!=null) {
-        		event.getValue().addOffer(this.currentOffer);
-        		CustomerDataService.getInstance().save(event.getValue());
-        		this.currentOffer.setCustomer(event.getValue());
+        		event.getValue().addOfferPosition(this.currentOfferPosition);
+        		OfferDataService.getInstance().save(event.getValue());
+        		this.currentOfferPosition.setOffer(event.getValue());
         		try {
-					binder.writeBean(this.currentOffer);
+					binder.writeBean(this.currentOfferPosition);
 				} catch (ValidationException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
-                this.currentOffer = offerService.update(this.currentOffer);
+                this.currentOfferPosition = offerPositionService.update(this.currentOfferPosition);
         	}
         });
 
@@ -147,38 +140,10 @@ public class OfferView extends Div {
         editorLayoutDiv.add(editorDiv);
 
         FormLayout formLayout = new FormLayout();
-        addFormItem(editorDiv, formLayout, offNr, "Offer number");
-        addFormItem(editorDiv, formLayout, customerNr, "Customer Number");
-        addFormItem(editorDiv, formLayout, customerName, "Customer name");
-        addFormItem(editorDiv, formLayout, customerAddress, "Customer Addresse");
-        addFormItem(editorDiv, formLayout, customer, "Customer");
-        createButtonLayout(editorLayoutDiv);
-        
-     // add grid
-        offerPositionGrid.addColumn(OfferPosition::getDeviceTyp).setHeader("Device Typ");
-        offerPositionGrid.addColumn(OfferPosition::getQuantity).setHeader("Quantity");
-        offerPositionGrid.addColumn(OfferPosition::getPrice).setHeader("Price");
-        offerPositionGrid.addColumn(
-        	    new NativeButtonRenderer<>("Remove",
-        	       clickedOfferPosition -> {
-        	           this.currentOffer.removeOfferPosition(clickedOfferPosition);
-        	           clickedOfferPosition.setOffer(null);
-					   // persist customer
-        	           try {
-							binder.writeBean(this.currentOffer);
-							this.currentOffer = offerService.update(this.currentOffer);
-						} catch (ValidationException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-					   // persist clickedDevice
-        	           OfferPositionDataService.getInstance().save(clickedOfferPosition);
-        	           populateForm(this.currentOffer);
-        	    })
-        	);
-        
-        offerPositionGrid.setWidthFull();
-        formLayout.add(offerPositionGrid);
+        addFormItem(editorDiv, formLayout, deviceTyp, "Device Typ");
+        addFormItem(editorDiv, formLayout, quantity, "Quantity");
+        addFormItem(editorDiv, formLayout, price, "Price");
+        addFormItem(editorDiv, formLayout, offer, "Offer");
         createButtonLayout(editorLayoutDiv);
 
         splitLayout.addToSecondary(editorLayoutDiv);
@@ -218,14 +183,8 @@ public class OfferView extends Div {
         populateForm(null);
     }
 
-    private void populateForm(Offer value) {
-        this.currentOffer= value;
-        binder.readBean(this.currentOffer);
-        if (currentOffer!=null) {
-    		binder.bindInstanceFields(this);
-	        offerPositionGrid.setItems(this.currentOffer.getOfferpositions());
-    	} else {
-    		offerPositionGrid.setItems(new ArrayList<OfferPosition>());
-    	}
+    private void populateForm(OfferPosition value) {
+        this.currentOfferPosition= value;
+        binder.readBean(this.currentOfferPosition);
     }
 }

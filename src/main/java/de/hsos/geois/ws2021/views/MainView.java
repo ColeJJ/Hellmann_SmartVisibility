@@ -27,6 +27,7 @@ import de.hsos.geois.ws2021.views.about.AboutView;
 import de.hsos.geois.ws2021.views.customer.CustomerView;
 import de.hsos.geois.ws2021.views.device.DeviceView;
 import de.hsos.geois.ws2021.views.offer.OfferView;
+import de.hsos.geois.ws2021.views.offerPosition.OfferPositionView;
 
 /**
  * The main view is a top-level placeholder for other views.
@@ -91,6 +92,7 @@ public class MainView extends AppLayout {
             createTab("Customers", CustomerView.class),
             createTab("Devices", DeviceView.class),
             createTab("Offers", OfferView.class),
+            createTab("Offerspositions", OfferPositionView.class),
             createTab("About", AboutView.class)
         };
     }
