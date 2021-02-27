@@ -21,8 +21,9 @@ public class OfferDataService extends DataService<Offer> {
     
     public static final String SORT_ON_ID = "o.id";
 	public static final String SORT_ON_OFFNR = "o.offNr";
-	public static final String SORT_ON_CUSTOMERNR = "o.customerNr";
-	public static final String SORT_ON_CUSTOMERNAME = "o.customerName";
+	public static final String SORT_ON_CUSTOMERFIRSTNAME = "o.customerFirstName";
+	public static final String SORT_ON_CUSTOMERLASTNAME = "o.customerLastName";
+	public static final String SORT_ON_COMPANYNAME = "o.companyName";
 	
 	private OfferDataService() {
 		super();
@@ -61,8 +62,9 @@ public class OfferDataService extends DataService<Offer> {
 	public int countOffers(String filter) {
 		String queryString = "SELECT count(o) FROM Offer o WHERE (CONCAT(o.id, '') LIKE :filter "
 				+ "OR LOWER(o.offNr) LIKE :filter "
-				+ "OR LOWER(o.customerNr) LIKE :filter "
-				+ "OR LOWER(o.customerName) LIKE :filter)";
+				+ "OR LOWER(o.companyName) LIKE :filter "
+				+ "OR LOWER(o.customerFirstName) LIKE :filter "
+				+ "OR LOWER(o.customerLastName) LIKE :filter)";
 		return super.count(queryString, filter);
 	}
 	
@@ -80,8 +82,9 @@ public class OfferDataService extends DataService<Offer> {
 		
 		String queryString = "SELECT o FROM Offer o WHERE (CONCAT(o.id, '') LIKE :filter "
 				+ "OR LOWER(o.offNr) LIKE :filter "
-				+ "OR LOWER(o.customerNr) LIKE :filter "
-				+ "OR LOWER(o.customerName) LIKE :filter)" + sortString;
+				+ "OR LOWER(o.companyName) LIKE :filter "
+				+ "OR LOWER(o.customerFirstName) LIKE :filter "
+				+ "OR LOWER(o.customerLastName) LIKE :filter)" + sortString;
 		
 		return EntityManagerHandler.runInTransaction(em -> em.createQuery(queryString, Offer.class)
 				 .setParameter("filter", preparedFilter)

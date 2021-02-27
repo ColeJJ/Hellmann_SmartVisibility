@@ -24,6 +24,7 @@ public class OfferPositionDataService extends DataService<OfferPosition> {
 	public static final String SORT_ON_DEVICETYP = "op.deviceTyp";
 	public static final String SORT_ON_QUANTITY = "op.quantity";
 	public static final String SORT_ON_PRICE = "op.price";
+	public static final String SORT_ON_TOTALPRICE = "op.totalPrice";
 	
 	private OfferPositionDataService() {
 		super();
@@ -63,7 +64,8 @@ public class OfferPositionDataService extends DataService<OfferPosition> {
 		String queryString = "SELECT count(op) FROM OfferPosition op WHERE (CONCAT(op.id, '') LIKE :filter "
 				+ "OR LOWER(op.deviceTyp) LIKE :filter "
 				+ "OR LOWER(op.quantity) LIKE :filter "
-				+ "OR LOWER(op.price) LIKE :filter)";
+				+ "OR LOWER(op.price) LIKE :filter "
+				+ "OR LOWER(op.totalPrice) LIKE :filter)";
 		return super.count(queryString, filter);
 	}
 	
@@ -82,7 +84,8 @@ public class OfferPositionDataService extends DataService<OfferPosition> {
 		String queryString = "SELECT op FROM OfferPosition op WHERE (CONCAT(op.id, '') LIKE :filter "
 				+ "OR LOWER(op.deviceTyp) LIKE :filter "
 				+ "OR LOWER(op.quantity) LIKE :filter "
-				+ "OR LOWER(op.price) LIKE :filter)" + sortString;
+				+ "OR LOWER(op.price) LIKE :filter " 
+				+ "OR LOWER(op.totalPrice) LIKE :filter)" + sortString;
 		
 		return EntityManagerHandler.runInTransaction(em -> em.createQuery(queryString, OfferPosition.class)
 				 .setParameter("filter", preparedFilter)
