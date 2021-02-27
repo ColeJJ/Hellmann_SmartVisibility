@@ -111,7 +111,7 @@ public class DeviceView extends Div {
         customer.setItems(CustomerDataService.getInstance().getAll());
         
         customer.addValueChangeListener(event -> {
-        	if (event.isFromClient() && event.getValue()!=null) {
+        	if (event.isFromClient() && event.getValue()!=null && this.currentDevice.getId()!=null) {
         		event.getValue().addDevice(this.currentDevice);
         		CustomerDataService.getInstance().save(event.getValue());
         		this.currentDevice.setCustomer(event.getValue());

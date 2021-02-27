@@ -15,9 +15,12 @@ import de.hsos.geois.ws2021.data.AbstractEntity;
 public class Offer extends AbstractEntity {
 
 	private String offNr;
-	private String customerNr;
-	private String customerName;
+	private String customerFirstName;
+	private String customerLastName;
+	private String companyName;
+	private String customerEmail;
 	private String customerAddress;
+	private String customerPhone;
 	
 	@OneToMany(mappedBy = "offer", cascade = CascadeType.ALL, orphanRemoval = false)
 	private Collection<OfferPosition> offerpositions;
@@ -41,24 +44,52 @@ public class Offer extends AbstractEntity {
 		return offerpositions;
 	}
 
-	public String getCustomerNr() {
-		return customerNr;
+	public void setOfferpositions(Collection<OfferPosition> offerpositions) {
+		this.offerpositions = offerpositions;
 	}
 
-	public void setCustomerNr(String customerNr) {
-		this.customerNr = customerNr;
+	public String getCompanyName() {
+		return companyName;
 	}
 
-	public String getCustomerName() {
-		return customerName;
+	public void setCompanyName(String companyName) {
+		this.companyName = companyName;
 	}
 
-	public void setCustomerName(String customerName) {
-		this.customerName = customerName;
+	public String getCustomerEmail() {
+		return customerEmail;
+	}
+
+	public void setCustomerEmail(String customerEmail) {
+		this.customerEmail = customerEmail;
 	}
 
 	public String getOffNr() {
 		return offNr;
+	}
+
+	public String getCustomerFirstName() {
+		return customerFirstName;
+	}
+
+	public void setCustomerFirstName(String customerFirstName) {
+		this.customerFirstName = customerFirstName;
+	}
+
+	public String getCustomerLastName() {
+		return customerLastName;
+	}
+
+	public void setCustomerLastName(String customerLastName) {
+		this.customerLastName = customerLastName;
+	}
+
+	public String getCustomerPhone() {
+		return customerPhone;
+	}
+
+	public void setCustomerPhone(String customerPhone) {
+		this.customerPhone = customerPhone;
 	}
 
 	public void setOffNr(String offNr) {
@@ -82,6 +113,6 @@ public class Offer extends AbstractEntity {
 	}
 	
 	public String toString() {
-		return "Nr: " + getOffNr() + ", Kunde:" + getCustomerName();
+		return "Nr: " + getOffNr() + ", Kunde:" + getCustomerFirstName() + " " + getCustomerLastName();
 	}
 }

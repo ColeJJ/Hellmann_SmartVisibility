@@ -14,6 +14,7 @@ import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.splitlayout.SplitLayout;
+import com.vaadin.flow.component.splitlayout.SplitLayout.Orientation;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.ValidationException;
@@ -42,10 +43,11 @@ public class OfferView extends Div {
 
     private Grid<Offer> grid;
 
-    private TextField customerNr = new TextField();
-    private TextField customerName = new TextField();
+    private TextField companyName = new TextField();
     private TextField customerAddress = new TextField();
+    private TextField customerEmail = new TextField();
     private TextField offNr = new TextField();
+    private TextField customerPhone = new TextField();
     
     private ComboBox<Customer> customer = new ComboBox<Customer>();
     
@@ -65,7 +67,7 @@ public class OfferView extends Div {
         this.offerService = OfferDataService.getInstance();
         // Configure Grid
         grid = new Grid<>(Offer.class);
-        grid.setColumns("offNr", "customerNr", "customerName", "customerAddress");
+        grid.setColumns("offNr","customerFirstName", "customerLastName", "companyName", "customerAddress");
         grid.setDataProvider(new OfferDataProvider());
         grid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
         grid.setHeightFull();
@@ -115,7 +117,7 @@ public class OfferView extends Div {
         customer.setItems(CustomerDataService.getInstance().getAll());
         
         customer.addValueChangeListener(event -> {
-        	if (event.isFromClient() && event.getValue()!=null) {
+        	if (event.isFromClient() && event.getValue()!=null && this.currentOffer.getId()!=null) {
         		event.getValue().addOffer(this.currentOffer);
         		CustomerDataService.getInstance().save(event.getValue());
         		this.currentOffer.setCustomer(event.getValue());
@@ -126,11 +128,23 @@ public class OfferView extends Div {
 					e1.printStackTrace();
 				}
                 this.currentOffer = offerService.update(this.currentOffer);
+                
+                companyName.setValue(currentOffer.getCustomer().getCompanyName());
+                customerAddress.setValue(currentOffer.getCustomer().getStreetAndNr() + ", " + currentOffer.getCustomer().getZipCode() + " " + currentOffer.getCustomer().getPlace());
+                customerEmail.setValue(currentOffer.getCustomer().getEmail());
+                customerPhone.setValue(currentOffer.getCustomer().getPhone());
+                currentOffer.setCustomerFirstName(currentOffer.getCustomer().getFirstName());
+                currentOffer.setCustomerLastName(currentOffer.getCustomer().getFirstName());
         	}
         });
+        
+        
 
         SplitLayout splitLayout = new SplitLayout();
+        SplitLayout offerPositionLayout = new SplitLayout();
         splitLayout.setSizeFull();
+       
+        offerPositionLayout.setOrientation(Orientation.VERTICAL);
 
         createGridLayout(splitLayout);
         createEditorLayout(splitLayout);
@@ -145,13 +159,19 @@ public class OfferView extends Div {
         Div editorDiv = new Div();
         editorDiv.setId("editor");
         editorLayoutDiv.add(editorDiv);
+        
+        companyName.setReadOnly(true);
+        customerEmail.setReadOnly(true);
+        customerAddress.setReadOnly(true);
+        customerPhone.setReadOnly(true);
 
         FormLayout formLayout = new FormLayout();
-        addFormItem(editorDiv, formLayout, offNr, "Offer number");
-        addFormItem(editorDiv, formLayout, customerNr, "Customer Number");
-        addFormItem(editorDiv, formLayout, customerName, "Customer name");
-        addFormItem(editorDiv, formLayout, customerAddress, "Customer Addresse");
+        addFormItem(editorDiv, formLayout, offNr, "Offer Number");
         addFormItem(editorDiv, formLayout, customer, "Customer");
+        addFormItem(editorDiv, formLayout, companyName, "Company Name");
+        addFormItem(editorDiv, formLayout, customerEmail, "Customer Email");
+        addFormItem(editorDiv, formLayout, customerAddress, "Customer Addresse");
+        addFormItem(editorDiv, formLayout, customerPhone, "Customer Phone");
         createButtonLayout(editorLayoutDiv);
         
      // add grid

@@ -1,5 +1,8 @@
 package de.hsos.geois.ws2021.views.offerPosition;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
+
 import com.vaadin.flow.component.AbstractField;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -9,10 +12,15 @@ import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.icon.Icon;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.splitlayout.SplitLayout;
+import com.vaadin.flow.component.textfield.BigDecimalField;
+import com.vaadin.flow.component.textfield.IntegerField;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.component.textfield.TextFieldVariant;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.router.PageTitle;
@@ -36,8 +44,9 @@ public class OfferPositionView extends Div {
     private Grid<OfferPosition> grid;
 
     private TextField deviceTyp = new TextField();
-    private TextField quantity = new TextField();
-    private TextField price = new TextField();
+    private IntegerField quantity = new IntegerField();
+    private BigDecimalField price = new BigDecimalField();
+    private BigDecimalField totalPrice = new BigDecimalField();
 
     private ComboBox<Offer> offer = new ComboBox<Offer>();
 
@@ -58,7 +67,7 @@ public class OfferPositionView extends Div {
         this.offerPositionService = OfferPositionDataService.getInstance();
         // Configure Grid
         grid = new Grid<>(OfferPosition.class);
-        grid.setColumns("deviceTyp", "quantity", "price", "offer");
+        grid.setColumns("offer", "deviceTyp", "quantity", "price", "totalPrice");
         grid.setDataProvider(new OfferPositionDataProvider());
         grid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
         grid.setHeightFull();
@@ -121,6 +130,29 @@ public class OfferPositionView extends Div {
                 refreshGrid();
         	}
         }); 
+        
+        //calculate total price      
+        price.addValueChangeListener(e -> {
+        	BigDecimal total;
+        	if (e.getValue() == null) {
+                total = BigDecimal.ZERO;
+            } else {
+                total = e.getValue().multiply(new BigDecimal(quantity.getValue()));
+            }
+            totalPrice.setValue(total);
+        });
+        
+        //Preis soll sich auch ändern, wenn nur Quantity geändert wird. Funktioniert so leider noch nicht.
+//        quantity.addValueChangeListener(e -> {
+//        	BigDecimal total;
+//        	if (e.getValue() == null) {
+//                total = BigDecimal.ZERO;
+//            } else {
+//                total = new BigDecimal(quantity.getValue()).multiply(price.getValue());
+//                
+//            }
+//            totalPrice.setValue(total);
+//        });
 
         SplitLayout splitLayout = new SplitLayout();
         splitLayout.setSizeFull();
@@ -138,12 +170,23 @@ public class OfferPositionView extends Div {
         Div editorDiv = new Div();
         editorDiv.setId("editor");
         editorLayoutDiv.add(editorDiv);
+        
+        quantity.setHasControls(true);
+        quantity.setMin(1);
+        price.addThemeVariants(TextFieldVariant.LUMO_ALIGN_RIGHT);
+        price.setPrefixComponent(new Icon(VaadinIcon.EURO));
+        totalPrice.addThemeVariants(TextFieldVariant.LUMO_ALIGN_RIGHT);
+        totalPrice.setPrefixComponent(new Icon(VaadinIcon.EURO));
+        totalPrice.setReadOnly(true);
+        
+
 
         FormLayout formLayout = new FormLayout();
+        addFormItem(editorDiv, formLayout, offer, "Offer");
         addFormItem(editorDiv, formLayout, deviceTyp, "Device Typ");
         addFormItem(editorDiv, formLayout, quantity, "Quantity");
         addFormItem(editorDiv, formLayout, price, "Price");
-        addFormItem(editorDiv, formLayout, offer, "Offer");
+        addFormItem(editorDiv, formLayout, totalPrice, "Total Price");
         createButtonLayout(editorLayoutDiv);
 
         splitLayout.addToSecondary(editorLayoutDiv);
