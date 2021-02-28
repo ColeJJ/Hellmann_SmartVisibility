@@ -112,6 +112,9 @@ public class OfferPositionView extends Div {
             } catch (ValidationException validationException) {
                 Notification.show("An exception happened while trying to store the offerposition details.");
             }
+            catch(NullPointerException npE) {
+            	Notification.show("Offerpositon could not be saved. Please choose an Offer!");
+            }
         });
         
      // add offers to combobox offers
@@ -165,6 +168,8 @@ public class OfferPositionView extends Div {
         editorDiv.setId("editor");
         editorLayoutDiv.add(editorDiv);
         
+        offer.setRequired(true);
+        offer.setErrorMessage("Please choose Offer!");
         quantity.setHasControls(true);
         quantity.setMin(1);
         price.addThemeVariants(TextFieldVariant.LUMO_ALIGN_RIGHT);

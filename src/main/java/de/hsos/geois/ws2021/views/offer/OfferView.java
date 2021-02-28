@@ -112,6 +112,9 @@ public class OfferView extends Div {
             } catch (ValidationException validationException) {
                 Notification.show("An exception happened while trying to store the offer details.");
             }
+            catch(NullPointerException npE) {
+            	Notification.show("Offer could not be saved. Please choose a Customer!");
+            }
         });
         
         // add customers to combobox customers
@@ -154,6 +157,8 @@ public class OfferView extends Div {
         editorDiv.setId("editor");
         editorLayoutDiv.add(editorDiv);
         
+        customer.setRequired(true);
+        customer.setErrorMessage("Please choose Customer!");
         companyName.setReadOnly(true);
         customerEmail.setReadOnly(true);
         customerAddress.setReadOnly(true);
