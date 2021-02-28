@@ -119,6 +119,7 @@ public class OfferView extends Div {
         
         customer.addValueChangeListener(event -> {
         	if (event.isFromClient() && event.getValue()!=null) {
+                if (this.currentOffer == null) { this.currentOffer = new Offer(); }
         		this.currentOffer.setCustomer(event.getValue());
                 
                 //fields automatically filled

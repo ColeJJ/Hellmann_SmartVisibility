@@ -118,6 +118,7 @@ public class DeviceView extends Div {
         
         customer.addValueChangeListener(event -> {
         	if (event.isFromClient() && event.getValue()!=null) {
+                if (this.currentDevice == null) { this.currentDevice = new Device(); }
         		this.currentDevice.setCustomer(event.getValue());
         	}
         });

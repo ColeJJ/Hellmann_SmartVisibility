@@ -117,6 +117,7 @@ public class OfferPositionView extends Div {
         //Listener only takes effect when currenOfferPostion is already given.. for new OfferPostions function connectWithOffer is used
         offer.addValueChangeListener(event -> {
         	if (event.isFromClient() && event.getValue()!=null) {
+                if (this.currentOfferPosition == null) { this.currentOfferPosition = new OfferPosition(); }
         		this.currentOfferPosition.setOffer(event.getValue());
         	}
         }); 
