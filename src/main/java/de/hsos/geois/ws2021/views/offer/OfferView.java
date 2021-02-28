@@ -102,7 +102,7 @@ public class OfferView extends Div {
             try {
                 if (this.currentOffer == null) {
                     this.currentOffer = new Offer();
-                }
+                }            
                 binder.writeBean(this.currentOffer);
                 //binding those objects creates and saves the object as well
                 this.connectWithCustomer();
@@ -131,7 +131,7 @@ public class OfferView extends Div {
                 customerEmail.setValue(currentOffer.getCustomer().getEmail());
                 customerPhone.setValue(currentOffer.getCustomer().getPhone());
                 currentOffer.setCustomerFirstName(currentOffer.getCustomer().getFirstName());
-                currentOffer.setCustomerLastName(currentOffer.getCustomer().getFirstName());
+                currentOffer.setCustomerLastName(currentOffer.getCustomer().getLastName());
         	}
         });
         

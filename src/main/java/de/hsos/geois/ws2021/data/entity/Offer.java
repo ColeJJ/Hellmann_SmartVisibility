@@ -115,6 +115,6 @@ public class Offer extends AbstractEntity {
 	}
 	
 	public String toString() {
-		return "Nr: " + getOffNr() + ", Kunde:" + getCustomerFirstName() + " " + getCustomerLastName();
+		return "Nr: " + getOffNr() + ", Kunde: " + getCustomerFirstName() + " " + getCustomerLastName();
 	}
 }
