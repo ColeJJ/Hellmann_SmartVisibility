@@ -101,7 +101,7 @@ public class OfferPositionView extends Div {
         save.addClickListener(e -> {
             try {
                 binder.writeBean(this.currentOfferPosition);
-                //if(this.currentOfferPosition.getOffer() != null) { this.connectWithOffer(); }
+                //this.connectWithOffer();
                 offerPositionService.save(this.currentOfferPosition);             
                 clearForm();
                 refreshGrid();
@@ -116,18 +116,8 @@ public class OfferPositionView extends Div {
         
         //Listener only takes effect when currenOfferPostion is already given.. for new OfferPostions function connectWithOffer is used
         offer.addValueChangeListener(event -> {
-        	if (event.isFromClient() && event.getValue()!=null && this.currentOfferPosition.getId()!=null) {
-        		event.getValue().addOfferPosition(this.currentOfferPosition);
-        		OfferDataService.getInstance().save(event.getValue());
+        	if (event.isFromClient() && event.getValue()!=null) {
         		this.currentOfferPosition.setOffer(event.getValue());
-        		try {
-					binder.writeBean(this.currentOfferPosition);
-				} catch (ValidationException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-                this.currentOfferPosition = offerPositionService.update(this.currentOfferPosition);
-                refreshGrid();
         	}
         }); 
         

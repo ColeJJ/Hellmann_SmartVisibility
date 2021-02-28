@@ -98,6 +98,7 @@ public class DeviceView extends Div {
                     this.currentDevice = new Device();
                 }
                 binder.writeBean(this.currentDevice);
+                //this.connectWithCustomer();
                 this.currentDevice = deviceService.update(this.currentDevice);
                 clearForm();
                 refreshGrid();
@@ -112,16 +113,7 @@ public class DeviceView extends Div {
         
         customer.addValueChangeListener(event -> {
         	if (event.isFromClient() && event.getValue()!=null && this.currentDevice.getId()!=null) {
-        		event.getValue().addDevice(this.currentDevice);
-        		CustomerDataService.getInstance().save(event.getValue());
         		this.currentDevice.setCustomer(event.getValue());
-        		try {
-					binder.writeBean(this.currentDevice);
-				} catch (ValidationException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-                this.currentDevice = deviceService.update(this.currentDevice);
         	}
         });
         
@@ -192,5 +184,10 @@ public class DeviceView extends Div {
     private void populateForm(Device value) {
         this.currentDevice = value;
         binder.readBean(this.currentDevice);
+    }
+
+    private void connectWithCustomer() {
+        this.currentDevice.getCustomer().addDevice(this.currentDevice);
+        CustomerDataService.getInstance().save(this.currentDevice.getCustomer());
     }
 }

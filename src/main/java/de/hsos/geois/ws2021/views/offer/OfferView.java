@@ -104,6 +104,7 @@ public class OfferView extends Div {
                     this.currentOffer = new Offer();
                 }
                 binder.writeBean(this.currentOffer);
+                //this.connectWithCustomer();
                 offerService.update(this.currentOffer);
                 clearForm();
                 refreshGrid();
@@ -117,18 +118,10 @@ public class OfferView extends Div {
         customer.setItems(CustomerDataService.getInstance().getAll());
         
         customer.addValueChangeListener(event -> {
-        	if (event.isFromClient() && event.getValue()!=null && this.currentOffer.getId()!=null) {
-        		event.getValue().addOffer(this.currentOffer);
-        		CustomerDataService.getInstance().save(event.getValue());
+        	if (event.isFromClient() && event.getValue()!=null) {
         		this.currentOffer.setCustomer(event.getValue());
-        		try {
-					binder.writeBean(this.currentOffer);
-				} catch (ValidationException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-                this.currentOffer = offerService.update(this.currentOffer);
                 
+                //fields automatically filled
                 companyName.setValue(currentOffer.getCustomer().getCompanyName());
                 customerAddress.setValue(currentOffer.getCustomer().getStreetAndNr() + ", " + currentOffer.getCustomer().getZipCode() + " " + currentOffer.getCustomer().getPlace());
                 customerEmail.setValue(currentOffer.getCustomer().getEmail());
@@ -247,5 +240,10 @@ public class OfferView extends Div {
     	} else {
     		offerPositionGrid.setItems(new ArrayList<OfferPosition>());
     	}
+    }
+
+    private void connectWithCustomer() {
+        this.currentOffer.getCustomer().addOffer(this.currentOffer);
+        CustomerDataService.getInstance().save(this.currentOffer.getCustomer());
     }
 }
