@@ -98,8 +98,13 @@ public class DeviceView extends Div {
                     this.currentDevice = new Device();
                 }
                 binder.writeBean(this.currentDevice);
-                //this.connectWithCustomer();
-                this.currentDevice = deviceService.update(this.currentDevice);
+                if(this.currentDevice.getCustomer() != null) {
+                    //binding those objects creates and saves the object as well
+                    this.connectWithCustomer();
+                }else{
+                    //if no customer is selected
+                    this.currentDevice = deviceService.update(this.currentDevice);
+                }
                 clearForm();
                 refreshGrid();
                 Notification.show("Device details stored.");
@@ -112,7 +117,7 @@ public class DeviceView extends Div {
         customer.setItems(CustomerDataService.getInstance().getAll());
         
         customer.addValueChangeListener(event -> {
-        	if (event.isFromClient() && event.getValue()!=null && this.currentDevice.getId()!=null) {
+        	if (event.isFromClient() && event.getValue()!=null) {
         		this.currentDevice.setCustomer(event.getValue());
         	}
         });

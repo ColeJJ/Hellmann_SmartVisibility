@@ -104,8 +104,8 @@ public class OfferView extends Div {
                     this.currentOffer = new Offer();
                 }
                 binder.writeBean(this.currentOffer);
-                //this.connectWithCustomer();
-                offerService.update(this.currentOffer);
+                //binding those objects creates and saves the object as well
+                this.connectWithCustomer();
                 clearForm();
                 refreshGrid();
                 Notification.show("Offer details stored.");
