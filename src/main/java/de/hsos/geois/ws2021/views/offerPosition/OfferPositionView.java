@@ -100,6 +100,9 @@ public class OfferPositionView extends Div {
 
         save.addClickListener(e -> {
             try {
+            	//update total price when price or quantity changed
+            	totalPrice.setValue(new BigDecimal(quantity.getValue()).multiply(price.getValue()));
+            	
                 binder.writeBean(this.currentOfferPosition);
                 //this.connectWithOffer();
                 offerPositionService.save(this.currentOfferPosition);             
@@ -132,7 +135,7 @@ public class OfferPositionView extends Div {
             totalPrice.setValue(total);
         });
         
-        //Preis soll sich auch ändern, wenn nur Quantity geändert wird. Funktioniert so leider noch nicht.
+        //Preis soll sich auch direkt ändern, wenn nur Quantity geändert wird. Funktioniert so leider noch nicht.
 //        quantity.addValueChangeListener(e -> {
 //        	BigDecimal total;
 //        	if (e.getValue() == null) {
