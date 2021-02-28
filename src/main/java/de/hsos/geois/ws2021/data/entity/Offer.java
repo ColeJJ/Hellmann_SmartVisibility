@@ -9,6 +9,8 @@ import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
+import org.eclipse.persistence.mappings.UnidirectionalOneToManyMapping;
+
 import de.hsos.geois.ws2021.data.AbstractEntity;
 
 @Entity
@@ -22,7 +24,7 @@ public class Offer extends AbstractEntity {
 	private String customerAddress;
 	private String customerPhone;
 	
-	@OneToMany(mappedBy = "offer", cascade = CascadeType.ALL, orphanRemoval = false)
+	@OneToMany(mappedBy = "offer", cascade = CascadeType.ALL, orphanRemoval = false, fetch = FetchType.LAZY)
 	private Collection<OfferPosition> offerpositions;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -41,11 +43,11 @@ public class Offer extends AbstractEntity {
 	}
 	
 	public Collection<OfferPosition> getOfferpositions() {
-		return offerpositions;
+		return this.offerpositions;
 	}
 
-	public void setOfferpositions(Collection<OfferPosition> offerpositions) {
-		this.offerpositions = offerpositions;
+	public void setOfferpositions(Collection<OfferPosition> list) {
+		this.offerpositions = list;
 	}
 
 	public String getCompanyName() {

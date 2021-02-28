@@ -104,8 +104,8 @@ public class OfferPositionView extends Div {
             	totalPrice.setValue(new BigDecimal(quantity.getValue()).multiply(price.getValue()));
             	
                 binder.writeBean(this.currentOfferPosition);
-                //this.connectWithOffer();
-                offerPositionService.save(this.currentOfferPosition);             
+                //binding those objects creates and saves the object as well
+                this.connectWithOffer();          
                 clearForm();
                 refreshGrid();
                 Notification.show("Offerposition details stored.");
@@ -225,7 +225,7 @@ public class OfferPositionView extends Div {
     }
 
     private void connectWithOffer() {
-        this.currentOfferPosition.getOffer().addOfferPosition(this.currentOfferPosition);
-        OfferDataService.getInstance().save(this.currentOfferPosition.getOffer());
+        boolean ok = this.currentOfferPosition.getOffer().addOfferPosition(this.currentOfferPosition);
+        if (ok) { OfferDataService.getInstance().update(this.currentOfferPosition.getOffer()); }
     }
 }
