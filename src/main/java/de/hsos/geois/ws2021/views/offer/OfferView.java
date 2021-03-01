@@ -11,6 +11,7 @@ import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.splitlayout.SplitLayout;
@@ -24,11 +25,9 @@ import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouteAlias;
 
 import de.hsos.geois.ws2021.data.entity.Customer;
-import de.hsos.geois.ws2021.data.entity.Device;
 import de.hsos.geois.ws2021.data.entity.Offer;
 import de.hsos.geois.ws2021.data.entity.OfferPosition;
 import de.hsos.geois.ws2021.data.service.CustomerDataService;
-import de.hsos.geois.ws2021.data.service.DeviceDataService;
 import de.hsos.geois.ws2021.data.service.OfferDataService;
 import de.hsos.geois.ws2021.data.service.OfferPositionDataService;
 import de.hsos.geois.ws2021.views.MainView;
@@ -55,6 +54,7 @@ public class OfferView extends Div {
 
     private Button cancel = new Button("Cancel");
     private Button save = new Button("Save");
+    private Button order = new Button("Convert to Order");
 
     private Binder<Offer> binder;
 
@@ -97,12 +97,17 @@ public class OfferView extends Div {
             clearForm();
             refreshGrid();
         });
+        
+        order.addClickListener(e -> {
+        	Notification.show("Offer will be convertet to an Order now!");
+        });
+        
 
         save.addClickListener(e -> {
             try {
                 if (this.currentOffer == null) {
                     this.currentOffer = new Offer();
-                }            
+                }           
                 binder.writeBean(this.currentOffer);
                 //binding those objects creates and saves the object as well
                 this.connectWithCustomer();
@@ -135,8 +140,6 @@ public class OfferView extends Div {
         	}
         });
         
-        
-
         SplitLayout splitLayout = new SplitLayout();
         SplitLayout offerPositionLayout = new SplitLayout();
         splitLayout.setSizeFull();
@@ -171,6 +174,7 @@ public class OfferView extends Div {
         addFormItem(editorDiv, formLayout, customerEmail, "Customer Email");
         addFormItem(editorDiv, formLayout, customerAddress, "Customer Addresse");
         addFormItem(editorDiv, formLayout, customerPhone, "Customer Phone");
+        
         createButtonLayout(editorLayoutDiv);
         
      // add grid
@@ -210,7 +214,8 @@ public class OfferView extends Div {
         buttonLayout.setSpacing(true);
         cancel.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
         save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        buttonLayout.add(save, cancel);
+        order.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        buttonLayout.add(save, cancel, order);
         editorLayoutDiv.add(buttonLayout);
     }
 
