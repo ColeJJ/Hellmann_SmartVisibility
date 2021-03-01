@@ -11,6 +11,7 @@ import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.splitlayout.SplitLayout;
@@ -29,7 +30,7 @@ import de.hsos.geois.ws2021.data.service.CustomerDataService;
 import de.hsos.geois.ws2021.views.MainView;
 
 @Route(value = "customer", layout = MainView.class)
-@PageTitle("MyDeviceManager")
+@PageTitle("Customer")
 @CssImport("./styles/views/mydevicemanager/my-device-manager-view.css")
 @RouteAlias(value = "customer", layout = MainView.class)
 public class CustomerView extends Div {
@@ -49,6 +50,7 @@ public class CustomerView extends Div {
     private TextField streetAndNr = new TextField();
     private TextField place = new TextField();
     private TextField zipCode = new TextField();
+    private Label gridHeader = new Label("Devices");
     
     private Grid<Device> deviceGrid = new Grid<Device>();
 
@@ -175,7 +177,7 @@ public class CustomerView extends Div {
         	);
         deviceGrid.setWidthFull();
         
-        formLayout.add(deviceGrid);
+        formLayout.add(gridHeader, deviceGrid);
         
         createButtonLayout(editorLayoutDiv);
 

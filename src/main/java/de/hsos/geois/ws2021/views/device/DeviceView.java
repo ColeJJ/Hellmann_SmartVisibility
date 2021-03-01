@@ -27,7 +27,7 @@ import de.hsos.geois.ws2021.data.service.DeviceDataService;
 import de.hsos.geois.ws2021.views.MainView;
 
 @Route(value = "device", layout = MainView.class)
-@PageTitle("MyDeviceManager")
+@PageTitle("Device")
 @CssImport("./styles/views/mydevicemanager/my-device-manager-view.css")
 @RouteAlias(value = "device", layout = MainView.class)
 public class DeviceView extends Div {

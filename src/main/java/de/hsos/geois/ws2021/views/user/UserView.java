@@ -24,7 +24,7 @@ import de.hsos.geois.ws2021.data.service.UserDataService;
 import de.hsos.geois.ws2021.views.MainView;
 
 @Route(value = "user", layout = MainView.class)
-@PageTitle("MyDeviceManager")
+@PageTitle("User")
 @CssImport("./styles/views/mydevicemanager/my-device-manager-view.css")
 @RouteAlias(value = "", layout = MainView.class)
 public class UserView extends Div {

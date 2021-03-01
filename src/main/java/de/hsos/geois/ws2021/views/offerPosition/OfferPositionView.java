@@ -34,7 +34,7 @@ import de.hsos.geois.ws2021.data.service.OfferPositionDataService;
 import de.hsos.geois.ws2021.views.MainView;
 
 @Route(value = "offerposition", layout = MainView.class)
-@PageTitle("MyDeviceManager")
+@PageTitle("Offerposition")
 @CssImport("./styles/views/mydevicemanager/my-device-manager-view.css")
 @RouteAlias(value = "offerposition", layout = MainView.class)
 public class OfferPositionView extends Div {

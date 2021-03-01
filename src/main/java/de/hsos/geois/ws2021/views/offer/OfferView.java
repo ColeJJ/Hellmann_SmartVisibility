@@ -33,7 +33,7 @@ import de.hsos.geois.ws2021.data.service.OfferPositionDataService;
 import de.hsos.geois.ws2021.views.MainView;
 
 @Route(value = "offer", layout = MainView.class)
-@PageTitle("MyDeviceManager")
+@PageTitle("Offer")
 @CssImport("./styles/views/mydevicemanager/my-device-manager-view.css")
 @RouteAlias(value = "offer", layout = MainView.class)
 public class OfferView extends Div {
@@ -47,6 +47,7 @@ public class OfferView extends Div {
     private TextField customerEmail = new TextField();
     private TextField offNr = new TextField();
     private TextField customerPhone = new TextField();
+    private Label gridHeader = new Label("Offerpositions");
     
     private ComboBox<Customer> customer = new ComboBox<Customer>();
     
@@ -181,6 +182,7 @@ public class OfferView extends Div {
         offerPositionGrid.addColumn(OfferPosition::getDeviceTyp).setHeader("Device Typ");
         offerPositionGrid.addColumn(OfferPosition::getQuantity).setHeader("Quantity");
         offerPositionGrid.addColumn(OfferPosition::getPrice).setHeader("Price");
+        offerPositionGrid.addColumn(OfferPosition::getTotalPrice).setHeader("Total Price");
         offerPositionGrid.addColumn(
         	    new NativeButtonRenderer<>("Remove",
         	       clickedOfferPosition -> {
@@ -201,7 +203,7 @@ public class OfferView extends Div {
         	);
         
         offerPositionGrid.setWidthFull();
-        formLayout.add(offerPositionGrid);
+        formLayout.add(gridHeader, offerPositionGrid);
         createButtonLayout(editorLayoutDiv);
 
         splitLayout.addToSecondary(editorLayoutDiv);

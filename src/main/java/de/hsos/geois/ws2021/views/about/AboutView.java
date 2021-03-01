@@ -15,7 +15,7 @@ public class AboutView extends Div {
 
     public AboutView() {
         setId("about-view");
-        add(new Label("Content placeholder"));
+        add(new Label("Projekt Hellmann Smart Visibility | Henrik Bruns, Torben Unland, Jannik Heilmann, Pia Köster, Pia Schwegmann"));
     }
 
 }
