@@ -61,6 +61,8 @@ public class OfferPositionView extends Div {
 
     private OfferPositionDataService offerPositionService;
 
+    private boolean givenObject = false;
+
 
     public OfferPositionView() {
         setId("my-device-manager-view");
@@ -76,6 +78,7 @@ public class OfferPositionView extends Div {
         grid.asSingleSelect().addValueChangeListener(event -> {
             if (event.getValue() != null) {
                 OfferPosition offerPositionFromBackend = offerPositionService.getById(event.getValue().getId());
+                this.givenObject = true;
                 // when a row is selected but the data is no longer available, refresh grid
                 if (offerPositionFromBackend != null) {
                     populateForm(offerPositionFromBackend);
@@ -231,7 +234,17 @@ public class OfferPositionView extends Div {
     }
 
     private void connectWithOffer() {
-        boolean ok = this.currentOfferPosition.getOffer().addOfferPosition(this.currentOfferPosition);
+        if (this.givenObject) {
+            //remove OfferPosition from Collection -> this.currentOfferPosition.getID()
+            boolean ok = this.currentOfferPosition.getOffer().addOfferPosition(this.currentOfferPosition);
+            //remove If: https://www.baeldung.com/java-collection-remove-elements
+            boolean ok = this.currenOfferPostion.getOffer().getOfferpositions().removeIf(e -> e.getID(this.currentOfferPosition.getID()));
+            boolean ok = this.currentOfferPosition.getOffer().addOfferPosition(this.currentOfferPosition);
+            //replace: https://howtodoinjava.com/java/collections/arraylist/replace-element-arraylist/
+            boolean ok = this.currenOfferPostion.getOffer().getOfferpositions().set(this.currenOfferPostion, this.currenOfferPostion);
+        } else {
+            boolean ok = this.currentOfferPosition.getOffer().addOfferPosition(this.currentOfferPosition);
+        }
         if (ok) { OfferDataService.getInstance().update(this.currentOfferPosition.getOffer()); }
     }
 }
