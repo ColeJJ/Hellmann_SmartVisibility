@@ -63,6 +63,8 @@ public class OfferView extends Div {
 
     private OfferDataService offerService;
 
+    private boolean givenObject = false;
+
     public OfferView() {
         setId("my-device-manager-view");
         this.offerService = OfferDataService.getInstance();
@@ -105,12 +107,12 @@ public class OfferView extends Div {
         
 
         save.addClickListener(e -> {
-            try {
-                if (this.currentOffer == null) {
-                    this.currentOffer = new Offer();
-                }           
+            try {   
+                givenObject = this.currentOffer.getId() != null ? true : false;
+
                 binder.writeBean(this.currentOffer);
                 //binding those objects creates and saves the object as well
+                OfferDataService.getInstance().save(this.currentOffer);
                 this.connectWithCustomer();
                 clearForm();
                 refreshGrid();
@@ -256,7 +258,8 @@ public class OfferView extends Div {
     }
 
     private void connectWithCustomer() {
-        this.currentOffer.getCustomer().addOffer(this.currentOffer);
-        CustomerDataService.getInstance().save(this.currentOffer.getCustomer());
+        if (givenObject) { this.currentOffer.getCustomer().removeOffer(this.currentOffer); }
+        boolean ok = this.currentOffer.getCustomer().addOffer(this.currentOffer);
+        if (ok) { CustomerDataService.getInstance().update(this.currentOffer.getCustomer()); }
     }
 }

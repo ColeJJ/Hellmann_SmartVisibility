@@ -1,7 +1,6 @@
 package de.hsos.geois.ws2021.views.offerPosition;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
 
 import com.vaadin.flow.component.AbstractField;
 import com.vaadin.flow.component.button.Button;
@@ -78,7 +77,6 @@ public class OfferPositionView extends Div {
         grid.asSingleSelect().addValueChangeListener(event -> {
             if (event.getValue() != null) {
                 OfferPosition offerPositionFromBackend = offerPositionService.getById(event.getValue().getId());
-                this.givenObject = true;
                 // when a row is selected but the data is no longer available, refresh grid
                 if (offerPositionFromBackend != null) {
                     populateForm(offerPositionFromBackend);
@@ -105,9 +103,12 @@ public class OfferPositionView extends Div {
             try {
             	//update total price when price or quantity changed
             	totalPrice.setValue(new BigDecimal(quantity.getValue()).multiply(price.getValue()));
+
+                givenObject = this.currentOfferPosition.getId() != null ? true : false;
             	
                 binder.writeBean(this.currentOfferPosition);
                 //binding those objects creates and saves the object as well
+                OfferPositionDataService.getInstance().save(this.currentOfferPosition);
                 this.connectWithOffer();          
                 clearForm();
                 refreshGrid();
@@ -230,21 +231,12 @@ public class OfferPositionView extends Div {
 
     private void populateForm(OfferPosition value) {
         this.currentOfferPosition= value;
-        binder.readBean(this.currentOfferPosition);
+        binder.readBean(this.currentOfferPosition);    
     }
 
     private void connectWithOffer() {
-        if (this.givenObject) {
-            //remove OfferPosition from Collection -> this.currentOfferPosition.getID()
-            boolean ok = this.currentOfferPosition.getOffer().addOfferPosition(this.currentOfferPosition);
-            //remove If: https://www.baeldung.com/java-collection-remove-elements
-            boolean ok = this.currenOfferPostion.getOffer().getOfferpositions().removeIf(e -> e.getID(this.currentOfferPosition.getID()));
-            boolean ok = this.currentOfferPosition.getOffer().addOfferPosition(this.currentOfferPosition);
-            //replace: https://howtodoinjava.com/java/collections/arraylist/replace-element-arraylist/
-            boolean ok = this.currenOfferPostion.getOffer().getOfferpositions().set(this.currenOfferPostion, this.currenOfferPostion);
-        } else {
-            boolean ok = this.currentOfferPosition.getOffer().addOfferPosition(this.currentOfferPosition);
-        }
+        if (givenObject) { this.currentOfferPosition.getOffer().removeOfferPosition(this.currentOfferPosition); }
+        boolean ok = this.currentOfferPosition.getOffer().addOfferPosition(this.currentOfferPosition);
         if (ok) { OfferDataService.getInstance().update(this.currentOfferPosition.getOffer()); }
     }
 }

@@ -44,6 +44,7 @@ public class DeviceView extends Div {
     
     private ComboBox<Customer> customer = new ComboBox<Customer>();
 
+    private boolean givenObject = false;
 
     // TODO: Refactore these buttons in a separate (abstract) form class
     private Button cancel = new Button("Cancel");
@@ -68,8 +69,7 @@ public class DeviceView extends Div {
         // when a row is selected or deselected, populate form
         grid.asSingleSelect().addValueChangeListener(event -> {
             if (event.getValue() != null) {
-//              Device deviceFromBackend = deviceService.getById(event.getValue().getId());
-            	Device deviceFromBackend = event.getValue();
+                Device deviceFromBackend = deviceService.getById(event.getValue().getId());
                 // when a row is selected but the data is no longer available, refresh grid
                 if (deviceFromBackend != null) {
                     populateForm(deviceFromBackend	);
@@ -94,16 +94,13 @@ public class DeviceView extends Div {
 
         save.addClickListener(e -> {
             try {
-                if (this.currentDevice == null) {
-                    this.currentDevice = new Device();
-                }
+                givenObject = this.currentDevice.getId() != null ? true : false;
+
                 binder.writeBean(this.currentDevice);
+                DeviceDataService.getInstance().save(this.currentDevice);
                 if(this.currentDevice.getCustomer() != null) {
                     //binding those objects creates and saves the object as well
                     this.connectWithCustomer();
-                }else{
-                    //if no customer is selected
-                    this.currentDevice = deviceService.update(this.currentDevice);
                 }
                 clearForm();
                 refreshGrid();
@@ -193,7 +190,8 @@ public class DeviceView extends Div {
     }
 
     private void connectWithCustomer() {
-        this.currentDevice.getCustomer().addDevice(this.currentDevice);
-        CustomerDataService.getInstance().save(this.currentDevice.getCustomer());
+        if (givenObject) { this.currentDevice.getCustomer().removeDevice(this.currentDevice); }
+        boolean ok = this.currentDevice.getCustomer().addDevice(this.currentDevice);
+        if (ok) { CustomerDataService.getInstance().update(this.currentDevice.getCustomer()); }
     }
 }
