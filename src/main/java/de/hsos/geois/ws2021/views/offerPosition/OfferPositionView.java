@@ -1,6 +1,8 @@
 package de.hsos.geois.ws2021.views.offerPosition;
 
 import java.math.BigDecimal;
+import java.util.Collection;
+import java.util.List;
 
 import com.vaadin.flow.component.AbstractField;
 import com.vaadin.flow.component.button.Button;
@@ -10,6 +12,7 @@ import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
+import com.vaadin.flow.component.grid.HeaderRow;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
@@ -22,6 +25,9 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.component.textfield.TextFieldVariant;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.ValidationException;
+import com.vaadin.flow.data.provider.DataProvider;
+import com.vaadin.flow.data.provider.ListDataProvider;
+import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouteAlias;
@@ -46,8 +52,10 @@ public class OfferPositionView extends Div {
     private IntegerField quantity = new IntegerField();
     private BigDecimalField price = new BigDecimalField();
     private BigDecimalField totalPrice = new BigDecimalField();
+    
 
     private ComboBox<Offer> offer = new ComboBox<Offer>();
+    private ComboBox<Offer> offerFilter = new ComboBox<Offer>("Filter by Offer");
 
 
     // TODO: Refactore these buttons in a separate (abstract) form class
@@ -62,20 +70,21 @@ public class OfferPositionView extends Div {
 
     private boolean givenObject = false;
 
-
     public OfferPositionView() {
         setId("my-device-manager-view");
         this.offerPositionService = OfferPositionDataService.getInstance();
+
         // Configure Grid
         grid = new Grid<>(OfferPosition.class);
         grid.setColumns("offer", "deviceTyp", "quantity", "price", "totalPrice");
         grid.setDataProvider(new OfferPositionDataProvider());
         grid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
-        grid.setHeightFull();
-
+        grid.setHeightFull();       
+ 
         // when a row is selected or deselected, populate form
         grid.asSingleSelect().addValueChangeListener(event -> {
             if (event.getValue() != null) {
+            	offerFilter.clear();
                 OfferPosition offerPositionFromBackend = offerPositionService.getById(event.getValue().getId());
                 // when a row is selected but the data is no longer available, refresh grid
                 if (offerPositionFromBackend != null) {
@@ -123,6 +132,7 @@ public class OfferPositionView extends Div {
         
      // add offers to combobox offers
         offer.setItems(OfferDataService.getInstance().getAll());
+        offerFilter.setItems(OfferDataService.getInstance().getAll());
         
         //Listener only takes effect when currenOfferPostion is already given.. for new OfferPostions function connectWithOffer is used
         offer.addValueChangeListener(event -> {
@@ -161,10 +171,10 @@ public class OfferPositionView extends Div {
         createGridLayout(splitLayout);
         createEditorLayout(splitLayout);
 
-        add(splitLayout);
+        add(offerFilter, splitLayout);
     }
-
-    private void createEditorLayout(SplitLayout splitLayout) {
+    
+	private void createEditorLayout(SplitLayout splitLayout) {
         Div editorLayoutDiv = new Div();
         editorLayoutDiv.setId("editor-layout");
 
